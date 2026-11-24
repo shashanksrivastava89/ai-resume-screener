@@ -1,0 +1,28 @@
+# India — the pilot default. DPDP notice duty, voluntary-only monitoring,
+# tenure norms tuned for Indian finance & sales.
+# Caste, religion and community are NEVER collected, monitored or scored — not even voluntarily.
+
+jurisdiction: IN
+
+signal_overrides:
+  tenure_pattern_vs_stability:
+    params: {short_stint_months: 9, lookback_years: 8}    # faster moves are market-normal in Indian sales/finance
+  language_evidence:
+    cap_points: 3  # multilingual field sales matters more in this market
+
+obligations:
+- "DPDP Act 2023: tell candidates an assistive screening tool processes their resume, and give them a contact for questions."
+- Outputs are internal evaluation only until the HR + Legal review completes — never used on live requisitions.
+- Monitoring data (gender, disability) comes from voluntary self-disclosure collected separately from resumes; scoring never sees it.
+
+# DPDP: keep the audit record for 3 years; purge candidate PII a year after close.
+keep_at_least_days: 1095
+purge_by_days: 400
+monitoring_categories:
+- gender (voluntary self-disclosure)
+- disability (voluntary self-disclosure)
+notes: >-
+  Never caste, religion or community — in monitoring, signals or anywhere else.
+  Processing in eastus is currently permitted under the DPDP Act's cross-border rules;
+  production moves processing to an Indian region (§12).
+version: 2

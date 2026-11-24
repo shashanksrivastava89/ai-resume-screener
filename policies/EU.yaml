@@ -1,0 +1,21 @@
+# European Union — AI Act (employment tools are high-risk) + GDPR Art. 22.
+
+jurisdiction: EU
+
+signal_overrides:
+  language_evidence:
+    enabled: false  # pilot-tuned for Indian regional languages; off in the EU until
+                    # reviewed (language requirements can proxy nationality there)
+
+obligations:
+  - "EU AI Act (high-risk use): keep event logs for every run, ensure trained human oversight, and give reviewers operating instructions."
+  - "GDPR Art. 22: no decision based solely on automated processing — a human makes every decision (this tool's floor guarantees it)."
+  - "GDPR: be ready to explain to a candidate the logic, evidence and human involvement behind any suggestion."
+
+# GDPR data-minimisation: keep the audit trail a year, purge candidate PII sooner.
+keep_at_least_days: 365
+purge_by_days: 180
+monitoring_categories: []
+notes: >-
+  For remote requisitions the candidate-residence policy union (e.g. GDPR applying to
+  an EU resident applying to an Indian role) is a production feature — runs print this caveat.

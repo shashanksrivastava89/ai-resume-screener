@@ -1,0 +1,72 @@
+# RBAC matrix (Addendum 08 + 11 + P51 + the 2026-07-19 role pass) — editable.
+# Maps Entra app roles to in-app capabilities. Pre-SSO the active role(s) come
+# from DEV_ROLE (default SuperAdmin for local dev; accepts a comma list); P27
+# uses the SSO identity. A principal may hold several roles — the effective
+# grant is the UNION of their capabilities (P36).
+# Capabilities:
+#   recruiter       - Requisitions / Screen / Review + record decisions (own reqs
+#                     unless reqs_all is also held)
+#   reqs_all        - see and act on EVERY requisition, not just the ones you
+#                     created or are assigned to (HR Head, Super Admin)
+#   reqs_read       - READ-ONLY requisitions + workspace (Legal, driven by the
+#                     audit trail — look, never touch; writes stay recruiter-gated)
+#   rules_view      - view Governance -> Scoring model, Jurisdictions
+#   rules_edit      - propose jurisdiction-pack changes (second-leader approval applies)
+#   scoring_edit    - propose scoring-model changes — bands, caps, credits, signals,
+#                     never-scored topics (everything editable via approval, 2026-07-18)
+#   changes_approve - approve/decline pending configuration changes (never one's own)
+#   runs_audit      - Governance -> Audit & History
+#   data_manage     - Governance -> Data (delete cache / candidate data)
+#   prefs_own       - manage one's own screening preferences (P39)
+#   prefs_approve   - approval queue for flagged preferences (P39)
+#   access_view     - Governance -> Access & Roles (the matrix page)
+#   access_edit     - grant or remove a person's regions on that page (2026-09-12).
+#                     Region scoping was declared but unusable: nothing outside
+#                     `screener db seed` could create a grant, so every real user
+#                     resolved as unscoped and the lens filtered nothing.
+#   flags_view      - see feature flags / Governance (P37)
+#   flags_edit      - toggle feature flags (P37)
+#   hm_take         - hiring-manager portal: record a "take" (P41)
+#   verdict_view    - see the AI's verdict on a candidate: band, score, written
+#                     summary, score math, evidence, strengths/watch-outs, gate
+#                     results, batch quality, and the AI's ranking order. Every
+#                     role that can open candidates holds it (2026-10-21, owner's
+#                     decision; it was HR-only from 2026-10-14). Remove it from a
+#                     role to take the AI's read away from that role again.
+#   decisions_all   - see the hiring DECISIONS (Move forward / Discuss / Not a fit,
+#                     the note, the hiring manager's take) on every requisition one
+#                     can open (HR Head). Everyone else sees them only on their
+#                     own requisitions — as the owner, its hiring manager, or a
+#                     collaborator it is shared with (2026-10-21).
+#
+# A capability this file never mentions arrives with the build's grants: this
+# file is copied onto a deployment's share ONCE and never overwritten, so without
+# that a capability added by a release would exist on a fresh deployment and on
+# no other. To switch a capability off for everyone, list it under `withheld:`.
+roles:
+  # Every edit available, every requisition and the AI's read on every candidate —
+  # but the team's DECISIONS only on a requisition of their own (2026-10-21).
+  SuperAdmin: [recruiter, reqs_all, reqs_read, rules_view, rules_edit, scoring_edit,
+               changes_approve, runs_audit, data_manage, prefs_own, prefs_approve,
+               access_view, access_edit, flags_view, flags_edit, hm_take, verdict_view]
+  # All reqs + preference/scoring approvals; NO Access & Roles, NO feature flags,
+  # NO Data page (2026-07-19 — destructive deletion stays with the Super Admin).
+  HRHead: [recruiter, reqs_all, rules_view, rules_edit, scoring_edit, changes_approve,
+           runs_audit, prefs_own, prefs_approve, verdict_view, decisions_all]
+  # Approvals, Audit & History, Scoring model, Jurisdictions — plus READ-ONLY
+  # requisitions + workspace (reqs_read), reached from the audit trail. No writes.
+  # In the workspace Legal sees the candidates and the AI's read, not the team's
+  # decisions (2026-10-21); Audit & History keeps the decision record.
+  Legal: [rules_view, rules_edit, scoring_edit, changes_approve, runs_audit, reqs_read,
+          verdict_view]
+  # Turned OFF for now (2026-07-19) — access to be decided; SuperAdmin covers it.
+  IT: []
+  # Own requisitions + own preferences only.
+  TASpecialist: [recruiter, prefs_own, verdict_view]
+  HRSpecialist: [recruiter, prefs_own, verdict_view]
+  # NO recruiter (no create/screen/decide) and NO prefs_own (2026-07-19): personal
+  # screening preferences apply to the runs of the person who screens — a hiring
+  # manager never screens, so the surface only misleads them. They see the
+  # candidates SHARED with them — résumé, the AI's read, the recruiter's decision —
+  # and give their take; nothing pool-wide (2026-10-21).
+  HiringManager: [hm_take, verdict_view]

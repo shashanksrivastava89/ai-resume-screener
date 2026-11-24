@@ -1,0 +1,23 @@
+# Local development database only. Production uses Azure Database for PostgreSQL
+# (passwordless via Entra / Managed Identity) — see .env.example DATABASE_URL.
+# Start with:  docker compose up -d db
+services:
+  db:
+    image: postgres:16
+    container_name: resume-screener-db
+    environment:
+      POSTGRES_USER: screener
+      POSTGRES_PASSWORD: screener
+      POSTGRES_DB: screener
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U screener -d screener"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:

@@ -1,0 +1,14 @@
+# United States — federal baseline for any US location without its own pack.
+
+jurisdiction: US-default
+
+obligations:
+  - "EEOC / Title VII / ADA / ADEA: keep every selection criterion job-related and consistent with business necessity, offer a reasonable accommodation on request, and never screen on age or disability."
+  - Use only structured, evidenced, job-related criteria (this tool's design) and keep each run's records for adverse-impact review per EEOC recordkeeping rules.
+
+# EEOC adverse-impact recordkeeping: keep the record ~2 years; purge PII after a year.
+keep_at_least_days: 730
+purge_by_days: 365
+monitoring_categories:
+  - race/ethnicity (voluntary EEO self-identification)
+  - gender (voluntary EEO self-identification)

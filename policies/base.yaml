@@ -1,0 +1,119 @@
+# Base policy — the FLOOR (never varies by jurisdiction) + global defaults.
+# Jurisdiction packs (IN.yaml, EU.yaml, …) dial which signals apply, their
+# caps/params, obligations, retention and monitoring categories. They can NEVER
+# turn a floor item off — policy.py fails validation if one tries (tested).
+# Pack contents require counsel validation before any region goes live; the PoC
+# uses them for internal evaluation only.
+
+jurisdiction: base
+
+floor:
+  redaction: true          # identity is stripped before any scoring model sees text
+  human_decision: true     # a person decides; the tool never rejects anyone
+  evidence_required: true  # no adjustment without a verbatim resume quote
+  excluded_signals: true   # the registry's excluded list always applies
+  decision_logging: true   # every run and human decision is recorded with versions
+
+signal_overrides:
+  tenure_pattern_vs_stability:
+    params: { short_stint_months: 12, min_stints_for_pattern: 2, lookback_years: 10 }
+  skill_recency:
+    params: { recent_years: 3 }
+  certification_currency:
+    params: { stale_after_years: 5 }
+  preferred_domain_background:
+    params: { organizations: [] }   # HR owns this list; while empty the signal never fires
+
+# The UNIVERSAL fairness floor as GOVERNED DATA (2026-07-21). These were the
+# hard-coded prefcheck _BLOCKED_PATTERNS / _WARN_PATTERNS; they now live here so
+# Legal + HR Head control them (via a second-leader change proposal), never a
+# developer. floor:true = can only be affirmed by a jurisdiction, never removed
+# except through the SuperAdmin structural + second-leader exposure ceremony.
+# Overlays (IN, US-CA, …) ADD region-specific patterns under NEW ids on top.
+blocked_patterns:
+  - id: protected_demographic
+    name: Protected demographic
+    reason: >-
+      This references a protected attribute (such as gender, religion, caste,
+      ethnicity, marital status or nationality). Preferences can never be based on it.
+    severity: blocked
+    floor: true
+    source: seed
+    stages: [preferences, checklist]
+    regexes:
+      - '\b(?:males?|females?|gender|(?:un)?married|marital|pregnan\w*|caste|religion|nationality|ethnic(?:ity)?|(?:wo)?men\s+(?:only|candidates?)|only\s+(?:wo)?men|lad(?:y|ies)\s+(?:only|candidates?))\b'
+  - id: age
+    name: Age (or DOB / graduation-year proxy)
+    reason: >-
+      This references age (or a date-of-birth / graduation-year proxy).
+      Preferences can never be based on age.
+    severity: blocked
+    floor: true
+    source: seed
+    stages: [preferences, checklist]
+    regexes:
+      - '\b(?:under|below|over|above)\s*\d{2}\b|\baged?\s*\d{2}\b|\bage of\b|\b\d{2}\s*(?:years?\s*old|yo)\b|\b(?:young|old)(?:er)?\s+candidates?\b|\bdate of birth\b|\bdob\b|\bgraduation year\b|\bborn\s+(?:before|after|in)\b'
+  - id: disability
+    name: Disability
+    reason: This references disability. Preferences can never be based on it.
+    severity: blocked
+    floor: true
+    source: seed
+    stages: [preferences, checklist]
+    regexes:
+      - '\bdisabilit(?:y|ies)\b|\bdisabled\b|\bdifferently[- ]abled\b|\bhandicap(?:ped)?\b'
+  - id: sexual_orientation
+    name: Sexual orientation
+    reason: This references sexual orientation. Preferences can never be based on it.
+    severity: blocked
+    floor: true
+    source: seed
+    stages: [preferences, checklist]
+    regexes:
+      - '\bsexual orientation\b|\blgbtq?\+?\b|\b(?:gay|lesbian|homosexual|heterosexual|bisexual)\b'
+  - id: location_preference
+    name: Location / city preference
+    reason: >-
+      This looks like a location or city preference — a common proxy. It needs
+      HR Head approval before it applies.
+    severity: warn
+    floor: true
+    source: seed
+    stages: [preferences, checklist]
+    regexes:
+      - '\btier[- ]?(?:1|one|2|two)\s*(?:cit(?:y|ies)|metro)\b|\bmetro(?:politan)?\s+(?:cit(?:y|ies)|candidates?)\b|\bprefers?\s+candidates?\s+(?:in|from|based\s+in|located\s+in|living\s+in)\b|\blocal\s+candidates?\s+(?:only|preferred)\b|\b(?:willing|able)\s+to\s+relocat|\bmust\s+relocat'
+  - id: language_preference
+    name: Language preference
+    reason: >-
+      This looks like a language preference — a possible proxy. It needs HR Head
+      approval before it applies.
+    severity: warn
+    floor: true
+    source: seed
+    stages: [preferences, checklist]
+    regexes:
+      - '\bnative\s+\w+\s+speakers?\b|\bprefers?\s+\w+[- ]speaking\b|\blanguage\s+preference\b|\bmother\s*tongue\b'
+  - id: employer_age
+    name: Employer age / size
+    reason: >-
+      This looks like it's about a company's age or size (e.g. start-ups) — a
+      proxy. It needs HR Head approval before it applies.
+    severity: warn
+    floor: true
+    source: seed
+    stages: [preferences, checklist]
+    regexes:
+      - '\bstart[- ]?ups?\b|\bearly[- ]stage\s+(?:compan(?:y|ies)|firms?)\b|\byoung\s+compan(?:y|ies)\b|\bestablished\s+(?:compan(?:y|ies)|firms?)\b|\bemployer\s+age\b|\bcompany\s+age\b'
+
+obligations:
+  - A human reviewer makes every shortlist decision; the tool only suggests and never rejects anyone.
+  - Show the evidence behind every suggestion; reviewers record a reason when they agree or override.
+  - Keep each run's audit record (run_meta.json) including rubric, registry and policy versions.
+
+# Retention duties (P45; both are NOTES for reviewers — nothing auto-deletes).
+keep_at_least_days: 1095   # keep the audit record at least ~3 years
+purge_by_days: 365         # purge candidate PII within a year of the requisition closing
+monitoring_categories: []
+notes: >-
+  Global floor and defaults. If a jurisdiction file is missing for a US location the
+  US-default pack applies; other unknown locations are an error, never a silent default.

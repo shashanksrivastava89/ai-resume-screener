@@ -1,0 +1,339 @@
+# Reference geography for the NON-SCORING location lens (2026-08-26).
+#
+# ⚠ THIS IS NOT A SCORING ARTIFACT. Nothing in this file can move a candidate's score.
+# It sits beside signals/ for one reason only — signals/ is seeded into DATA_ROOT, so a
+# hosted deployment can correct a wrong or missing city by editing a file on the share
+# instead of waiting for a release. It carries no version, needs no approval, and is
+# deliberately absent from the governed scoring model: `commute_or_address` is a FLOOR
+# never-scored topic (CLAUDE.md §6.6), so distance is recruiter CONTEXT and a Review
+# filter, never a weight, a gate or a band.
+#
+# WHY A TABLE RATHER THAN A GEOCODING SERVICE. Azure Maps would be more accurate and
+# global, but it would send candidate location text to an external service — a privacy
+# decision that belongs to HR and Legal, not to an implementation. A local table keeps
+# every candidate's stated location inside the tenant, and makes the distance
+# DETERMINISTIC and replayable, which is the same property Layer 1 guarantees: the same
+# résumé and the same requisition always produce the same number, and anyone can check
+# the arithmetic.
+#
+# PRECISION. Coordinates are approximate city-centre points at 2 decimal places (~1 km).
+# That is the right resolution for "is this candidate plausibly local?" and the wrong
+# resolution for anything else — the UI always renders these as "≈ N km" for that reason.
+# Distances are great-circle (haversine), so they are shorter than a road route.
+#
+# COVERAGE IS THE POINT OF FAILURE, AND IT FAILS SAFE. A place that is not in this table
+# resolves to "distance unknown", which is never treated as "far away" and never filters
+# anyone out. Adding a city is one entry; nothing else changes.
+#
+# `aliases` covers renames and common spellings, which is the likeliest source of a false
+# "unknown" in the Indian pilot (Gurgaon/Gurugram, Bombay/Mumbai, Bangalore/Bengaluru).
+#
+# `sweep: false` keeps a name out of the LAST-RESORT scan of the résumé body while
+# leaving it fully usable as a job location and on an explicit "Location: …" line. It is
+# for names that are also ordinary words or personal names — see the rules above the
+# "OUTSIDE INDIA" section.
+#
+# THIS FILE IS MERGED WITH THE ONE IN THE BUILD. DATA_ROOT seeds a copy on first run and
+# never overwrites it, so the shipped table is the floor and entries here are laid over
+# it by name: a release can add cities without touching the share, and a correction made
+# here survives every release.
+
+schema: 1
+
+places:
+  # --- Delhi NCR (the pilot's densest cluster) -------------------------------------
+  - { name: Delhi,             lat: 28.61, lon: 77.21, aliases: [New Delhi, NCR, National Capital Region] }
+  - { name: Gurugram,          lat: 28.46, lon: 77.03, aliases: [Gurgaon] }
+  - { name: Noida,             lat: 28.58, lon: 77.33, aliases: [Gautam Buddha Nagar] }
+  - { name: Greater Noida,     lat: 28.47, lon: 77.50 }
+  - { name: Faridabad,         lat: 28.41, lon: 77.31 }
+  - { name: Ghaziabad,         lat: 28.67, lon: 77.43 }
+  - { name: Sonipat,           lat: 28.99, lon: 77.02 }
+  - { name: Meerut,            lat: 28.98, lon: 77.71 }
+
+  # --- Western India ---------------------------------------------------------------
+  - { name: Mumbai,            lat: 19.08, lon: 72.88, aliases: [Bombay] }
+  - { name: Navi Mumbai,       lat: 19.03, lon: 73.03 }
+  - { name: Thane,             lat: 19.22, lon: 72.98 }
+  - { name: Pune,              lat: 18.52, lon: 73.86, aliases: [Poona] }
+  - { name: Nashik,            lat: 20.00, lon: 73.79 }
+  - { name: Nagpur,            lat: 21.15, lon: 79.09 }
+  - { name: Aurangabad,        lat: 19.88, lon: 75.34 }
+  - { name: Ahmedabad,         lat: 23.02, lon: 72.57, aliases: [Amdavad] }
+  - { name: Gandhinagar,       lat: 23.22, lon: 72.65 }
+  - { name: Vadodara,          lat: 22.31, lon: 73.18, aliases: [Baroda] }
+  - { name: Surat,             lat: 21.17, lon: 72.83 }
+  - { name: Rajkot,            lat: 22.30, lon: 70.80 }
+  - { name: Panaji,            lat: 15.50, lon: 73.83, aliases: [Goa] }
+
+  # --- Southern India --------------------------------------------------------------
+  - { name: Bengaluru,         lat: 12.97, lon: 77.59, aliases: [Bangalore, BLR] }
+  - { name: Mysuru,            lat: 12.30, lon: 76.64, aliases: [Mysore] }
+  - { name: Hyderabad,         lat: 17.39, lon: 78.49 }
+  - { name: Secunderabad,      lat: 17.44, lon: 78.50 }
+  - { name: Chennai,           lat: 13.08, lon: 80.27, aliases: [Madras] }
+  - { name: Coimbatore,        lat: 11.02, lon: 76.96 }
+  - { name: Madurai,           lat: 9.93,  lon: 78.12 }
+  - { name: Kochi,             lat: 9.93,  lon: 76.27, aliases: [Cochin, Ernakulam] }
+  - { name: Thiruvananthapuram, lat: 8.52, lon: 76.94, aliases: [Trivandrum] }
+  - { name: Visakhapatnam,     lat: 17.69, lon: 83.22, aliases: [Vizag] }
+
+  # --- Northern + Eastern India ----------------------------------------------------
+  - { name: Jaipur,            lat: 26.91, lon: 75.79 }
+  - { name: Lucknow,           lat: 26.85, lon: 80.95 }
+  - { name: Kanpur,            lat: 26.45, lon: 80.33 }
+  - { name: Prayagraj,         lat: 25.44, lon: 81.85, aliases: [Allahabad] }
+  - { name: Varanasi,          lat: 25.32, lon: 82.97, aliases: [Banaras] }
+  - { name: Chandigarh,        lat: 30.73, lon: 76.78 }
+  - { name: Mohali,            lat: 30.70, lon: 76.72 }
+  - { name: Panchkula,         lat: 30.69, lon: 76.85 }
+  - { name: Ludhiana,          lat: 30.90, lon: 75.86 }
+  - { name: Amritsar,          lat: 31.63, lon: 74.87 }
+  - { name: Dehradun,          lat: 30.32, lon: 78.03 }
+  - { name: Indore,            lat: 22.72, lon: 75.86 }
+  - { name: Bhopal,            lat: 23.26, lon: 77.41 }
+  - { name: Kolkata,           lat: 22.57, lon: 88.36, aliases: [Calcutta] }
+  - { name: Bhubaneswar,       lat: 20.30, lon: 85.82 }
+  - { name: Patna,             lat: 25.59, lon: 85.14 }
+  - { name: Ranchi,            lat: 23.34, lon: 85.31 }
+  - { name: Guwahati,          lat: 26.14, lon: 91.74 }
+  - { name: Raipur,            lat: 21.25, lon: 81.63 }
+
+  # ===================================================================================
+  # OUTSIDE INDIA
+  #
+  # This section used to hold eight cities and said "kept short on purpose … not as
+  # real coverage". A pilot requisition for BUDAPEST then read as "distance unknown"
+  # on every candidate (2026-09-11), which looks like a broken filter rather than a
+  # missing row — the job's own city was the unresolvable side, and no candidate could
+  # ever match. A requisition may be raised anywhere the company hires, so the table
+  # now covers the places one plausibly is.
+  #
+  # TWO RULES FOR ADDING A CITY:
+  #  1. A name that is also an ordinary English word or a common personal name
+  #     ("Nice", "Austin", "Phoenix", "Reading") must carry `sweep: false`. It stays
+  #     fully usable as a job location and on an explicit "Location: Austin" line, but
+  #     it is kept out of the last-resort sweep of the résumé body, where a bare word
+  #     in prose would otherwise be read as somebody's home town. A confidently wrong
+  #     city is worse than an honest "unknown".
+  #  2. Never add two cities with the same name (Cambridge, Birmingham). The first
+  #     entry wins, so the loser's residents would be reported thousands of km from
+  #     where they live. Leave the ambiguous one out; "unknown" is the honest answer.
+  # ===================================================================================
+
+  # --- United Kingdom & Ireland ----------------------------------------------------
+  - { name: London,            lat: 51.51, lon: -0.13 }
+  - { name: Manchester,        lat: 53.48, lon: -2.24 }
+  - { name: Leeds,             lat: 53.80, lon: -1.55 }
+  - { name: Bristol,           lat: 51.45, lon: -2.59 }
+  - { name: Edinburgh,         lat: 55.95, lon: -3.19 }
+  - { name: Glasgow,           lat: 55.86, lon: -4.25 }
+  - { name: Belfast,           lat: 54.60, lon: -5.93 }
+  - { name: Dublin,            lat: 53.35, lon: -6.26 }
+  - { name: Cork,              lat: 51.90, lon: -8.47, sweep: false }
+
+  # --- Western Europe --------------------------------------------------------------
+  - { name: Paris,             lat: 48.86, lon: 2.35 }
+  - { name: Lyon,              lat: 45.76, lon: 4.84 }
+  - { name: Marseille,         lat: 43.30, lon: 5.37 }
+  - { name: Toulouse,          lat: 43.60, lon: 1.44 }
+  - { name: Lille,             lat: 50.63, lon: 3.06 }
+  - { name: Nantes,            lat: 47.22, lon: -1.55 }
+  - { name: Nice,              lat: 43.70, lon: 7.27, sweep: false }
+  - { name: Brussels,          lat: 50.85, lon: 4.35, aliases: [Bruxelles] }
+  - { name: Antwerp,           lat: 51.22, lon: 4.40, aliases: [Antwerpen] }
+  - { name: Ghent,             lat: 51.05, lon: 3.72 }
+  - { name: Luxembourg,        lat: 49.61, lon: 6.13 }
+  - { name: Amsterdam,         lat: 52.37, lon: 4.90 }
+  - { name: Rotterdam,         lat: 51.92, lon: 4.48 }
+  - { name: The Hague,         lat: 52.08, lon: 4.31, aliases: [Den Haag] }
+  - { name: Utrecht,           lat: 52.09, lon: 5.12 }
+  - { name: Eindhoven,         lat: 51.44, lon: 5.48 }
+
+  # --- Germany, Austria, Switzerland -----------------------------------------------
+  - { name: Berlin,            lat: 52.52, lon: 13.40 }
+  - { name: Munich,            lat: 48.14, lon: 11.58, aliases: [Muenchen, München] }
+  - { name: Frankfurt,         lat: 50.11, lon: 8.68, aliases: [Frankfurt am Main] }
+  - { name: Hamburg,           lat: 53.55, lon: 9.99 }
+  - { name: Cologne,           lat: 50.94, lon: 6.96, aliases: [Koeln, Köln] }
+  - { name: Dusseldorf,        lat: 51.23, lon: 6.78 }
+  - { name: Stuttgart,         lat: 48.78, lon: 9.18 }
+  - { name: Leipzig,           lat: 51.34, lon: 12.37 }
+  - { name: Dresden,           lat: 51.05, lon: 13.74 }
+  - { name: Nuremberg,         lat: 49.45, lon: 11.08, aliases: [Nuernberg, Nürnberg] }
+  - { name: Vienna,            lat: 48.21, lon: 16.37, aliases: [Wien] }
+  - { name: Graz,              lat: 47.07, lon: 15.44 }
+  - { name: Zurich,            lat: 47.38, lon: 8.54 }
+  - { name: Geneva,            lat: 46.20, lon: 6.14, aliases: [Genève] }
+  - { name: Basel,             lat: 47.56, lon: 7.59 }
+  - { name: Bern,              lat: 46.95, lon: 7.45 }
+
+  # --- Southern Europe -------------------------------------------------------------
+  - { name: Madrid,            lat: 40.42, lon: -3.70 }
+  - { name: Barcelona,         lat: 41.39, lon: 2.17 }
+  - { name: Valencia,          lat: 39.47, lon: -0.38 }
+  - { name: Seville,           lat: 37.39, lon: -5.98, aliases: [Sevilla] }
+  - { name: Bilbao,            lat: 43.26, lon: -2.93 }
+  - { name: Lisbon,            lat: 38.72, lon: -9.14, aliases: [Lisboa] }
+  - { name: Porto,             lat: 41.15, lon: -8.61 }
+  - { name: Rome,              lat: 41.90, lon: 12.50, aliases: [Roma] }
+  - { name: Milan,             lat: 45.46, lon: 9.19, aliases: [Milano] }
+  - { name: Turin,             lat: 45.07, lon: 7.69, aliases: [Torino] }
+  - { name: Naples,            lat: 40.85, lon: 14.27, aliases: [Napoli] }
+  - { name: Bologna,           lat: 44.49, lon: 11.34 }
+  - { name: Florence,          lat: 43.77, lon: 11.26, aliases: [Firenze] }
+  - { name: Athens,            lat: 37.98, lon: 23.73 }
+  - { name: Thessaloniki,      lat: 40.64, lon: 22.94 }
+
+  # --- Nordics & Baltics -----------------------------------------------------------
+  - { name: Copenhagen,        lat: 55.68, lon: 12.57, aliases: [Kobenhavn, København] }
+  - { name: Stockholm,         lat: 59.33, lon: 18.07 }
+  - { name: Gothenburg,        lat: 57.71, lon: 11.97, aliases: [Goteborg] }
+  - { name: Malmo,             lat: 55.60, lon: 13.00 }
+  - { name: Oslo,              lat: 59.91, lon: 10.75 }
+  - { name: Helsinki,          lat: 60.17, lon: 24.94 }
+  - { name: Tallinn,           lat: 59.44, lon: 24.75 }
+  - { name: Riga,              lat: 56.95, lon: 24.11 }
+  - { name: Vilnius,           lat: 54.69, lon: 25.28 }
+
+  # --- Central & Eastern Europe ----------------------------------------------------
+  - { name: Budapest,          lat: 47.50, lon: 19.04 }
+  - { name: Debrecen,          lat: 47.53, lon: 21.64 }
+  - { name: Szeged,            lat: 46.25, lon: 20.15 }
+  - { name: Prague,            lat: 50.08, lon: 14.44, aliases: [Praha] }
+  - { name: Brno,              lat: 49.20, lon: 16.61 }
+  - { name: Bratislava,        lat: 48.15, lon: 17.11 }
+  - { name: Warsaw,            lat: 52.23, lon: 21.01, aliases: [Warszawa] }
+  - { name: Krakow,            lat: 50.06, lon: 19.94, aliases: [Cracow] }
+  - { name: Wroclaw,           lat: 51.11, lon: 17.03, aliases: [Wrocław] }
+  - { name: Poznan,            lat: 52.41, lon: 16.93 }
+  - { name: Gdansk,            lat: 54.35, lon: 18.65 }
+  - { name: Lodz,              lat: 51.76, lon: 19.46, aliases: [Łódź] }
+  - { name: Bucharest,         lat: 44.43, lon: 26.10, aliases: [Bucuresti] }
+  - { name: Cluj-Napoca,       lat: 46.77, lon: 23.60, aliases: [Cluj] }
+  - { name: Timisoara,         lat: 45.75, lon: 21.23 }
+  - { name: Sofia,             lat: 42.70, lon: 23.32 }
+  - { name: Belgrade,          lat: 44.79, lon: 20.45, aliases: [Beograd] }
+  - { name: Zagreb,            lat: 45.81, lon: 15.98 }
+  - { name: Ljubljana,         lat: 46.06, lon: 14.51 }
+  - { name: Kyiv,              lat: 50.45, lon: 30.52, aliases: [Kiev] }
+  - { name: Moscow,            lat: 55.76, lon: 37.62 }
+  - { name: Istanbul,          lat: 41.01, lon: 28.98 }
+  - { name: Ankara,            lat: 39.93, lon: 32.86 }
+  - { name: Izmir,             lat: 38.42, lon: 27.14 }
+
+  # --- Middle East -----------------------------------------------------------------
+  - { name: Dubai,             lat: 25.20, lon: 55.27 }
+  - { name: Abu Dhabi,         lat: 24.45, lon: 54.38 }
+  - { name: Doha,              lat: 25.29, lon: 51.53 }
+  - { name: Riyadh,            lat: 24.71, lon: 46.68 }
+  - { name: Jeddah,            lat: 21.49, lon: 39.19 }
+  - { name: Kuwait City,       lat: 29.38, lon: 47.99 }
+  - { name: Manama,            lat: 26.23, lon: 50.59 }
+  - { name: Muscat,            lat: 23.59, lon: 58.41 }
+  - { name: Tel Aviv,          lat: 32.08, lon: 34.78 }
+
+  # --- Africa ----------------------------------------------------------------------
+  - { name: Cairo,             lat: 30.04, lon: 31.24 }
+  - { name: Casablanca,        lat: 33.57, lon: -7.59 }
+  - { name: Tunis,             lat: 36.81, lon: 10.18 }
+  - { name: Lagos,             lat: 6.52,  lon: 3.38 }
+  - { name: Accra,             lat: 5.60,  lon: -0.19 }
+  - { name: Nairobi,           lat: -1.29, lon: 36.82 }
+  - { name: Addis Ababa,       lat: 9.03,  lon: 38.74 }
+  - { name: Johannesburg,      lat: -26.20, lon: 28.05 }
+  - { name: Cape Town,         lat: -33.92, lon: 18.42 }
+  - { name: Durban,            lat: -29.86, lon: 31.02 }
+
+  # --- North America ---------------------------------------------------------------
+  - { name: New York,          lat: 40.71, lon: -74.01, aliases: [NYC, New York City] }
+  - { name: Boston,            lat: 42.36, lon: -71.06 }
+  - { name: Philadelphia,      lat: 39.95, lon: -75.17 }
+  - { name: Washington,        lat: 38.91, lon: -77.04, aliases: [Washington DC] }
+  - { name: Atlanta,           lat: 33.75, lon: -84.39 }
+  - { name: Miami,             lat: 25.77, lon: -80.19 }
+  - { name: Raleigh,           lat: 35.78, lon: -78.64 }
+  - { name: Chicago,           lat: 41.88, lon: -87.63 }
+  - { name: Minneapolis,       lat: 44.98, lon: -93.27 }
+  - { name: Detroit,           lat: 42.33, lon: -83.05 }
+  - { name: Houston,           lat: 29.76, lon: -95.37 }
+  - { name: Dallas,            lat: 32.78, lon: -96.80 }
+  - { name: Austin,            lat: 30.27, lon: -97.74, sweep: false }
+  - { name: Denver,            lat: 39.74, lon: -104.99 }
+  - { name: Phoenix,           lat: 33.45, lon: -112.07, sweep: false }
+  - { name: Seattle,           lat: 47.61, lon: -122.33 }
+  - { name: Portland,          lat: 45.52, lon: -122.68 }
+  - { name: San Francisco,     lat: 37.77, lon: -122.42 }
+  - { name: Oakland,           lat: 37.80, lon: -122.27 }
+  - { name: San Jose,          lat: 37.34, lon: -121.89 }
+  - { name: Santa Clara,       lat: 37.35, lon: -121.96 }
+  - { name: Sacramento,        lat: 38.58, lon: -121.49 }
+  - { name: Los Angeles,       lat: 34.05, lon: -118.24, aliases: [LA] }
+  - { name: Irvine,            lat: 33.68, lon: -117.83 }
+  - { name: San Diego,         lat: 32.72, lon: -117.16 }
+  - { name: Concord,           lat: 37.98, lon: -122.03 }   # Acme HQ, California
+  - { name: Toronto,           lat: 43.65, lon: -79.38 }
+  - { name: Montreal,          lat: 45.50, lon: -73.57 }
+  - { name: Ottawa,            lat: 45.42, lon: -75.70 }
+  - { name: Calgary,           lat: 51.05, lon: -114.07 }
+  - { name: Vancouver,         lat: 49.28, lon: -123.12 }
+  - { name: Mexico City,       lat: 19.43, lon: -99.13, aliases: [Ciudad de Mexico] }
+  - { name: Guadalajara,       lat: 20.67, lon: -103.35 }
+  - { name: Monterrey,         lat: 25.69, lon: -100.32 }
+
+  # --- South America ---------------------------------------------------------------
+  - { name: Sao Paulo,         lat: -23.55, lon: -46.63 }
+  - { name: Rio de Janeiro,    lat: -22.91, lon: -43.17 }
+  - { name: Brasilia,          lat: -15.79, lon: -47.88 }
+  - { name: Buenos Aires,      lat: -34.60, lon: -58.38 }
+  - { name: Santiago,          lat: -33.45, lon: -70.67 }
+  - { name: Bogota,            lat: 4.71,  lon: -74.07 }
+  - { name: Lima,              lat: -12.05, lon: -77.04 }
+  - { name: Montevideo,        lat: -34.90, lon: -56.16 }
+  - { name: Panama City,       lat: 8.98,  lon: -79.52 }
+  - { name: San Juan,          lat: 18.47, lon: -66.11 }
+
+  # --- East & South-East Asia ------------------------------------------------------
+  - { name: Singapore,         lat: 1.35,  lon: 103.82 }
+  - { name: Tokyo,             lat: 35.68, lon: 139.69 }
+  - { name: Yokohama,          lat: 35.44, lon: 139.64 }
+  - { name: Osaka,             lat: 34.69, lon: 135.50 }
+  - { name: Nagoya,            lat: 35.18, lon: 136.91 }
+  - { name: Kyoto,             lat: 35.01, lon: 135.77 }
+  - { name: Fukuoka,           lat: 33.59, lon: 130.40 }
+  - { name: Seoul,             lat: 37.57, lon: 126.98 }
+  - { name: Busan,             lat: 35.18, lon: 129.08 }
+  - { name: Beijing,           lat: 39.90, lon: 116.41, aliases: [Peking] }
+  - { name: Shanghai,          lat: 31.23, lon: 121.47 }
+  - { name: Shenzhen,          lat: 22.54, lon: 114.06 }
+  - { name: Guangzhou,         lat: 23.13, lon: 113.26 }
+  - { name: Chengdu,           lat: 30.57, lon: 104.07 }
+  - { name: Hangzhou,          lat: 30.27, lon: 120.16 }
+  - { name: Suzhou,            lat: 31.30, lon: 120.58 }
+  - { name: Hong Kong,         lat: 22.32, lon: 114.17 }
+  - { name: Taipei,            lat: 25.03, lon: 121.57 }
+  - { name: Bangkok,           lat: 13.76, lon: 100.50 }
+  - { name: Ho Chi Minh City,  lat: 10.82, lon: 106.63, aliases: [Saigon] }
+  - { name: Hanoi,             lat: 21.03, lon: 105.85 }
+  - { name: Jakarta,           lat: -6.21, lon: 106.85 }
+  - { name: Surabaya,          lat: -7.26, lon: 112.75 }
+  - { name: Kuala Lumpur,      lat: 3.14,  lon: 101.69 }
+  - { name: Penang,            lat: 5.41,  lon: 100.33, aliases: [George Town] }
+  - { name: Manila,            lat: 14.60, lon: 120.98 }
+  - { name: Cebu,              lat: 10.32, lon: 123.89 }
+
+  # --- South Asia (outside India) & Oceania ----------------------------------------
+  - { name: Colombo,           lat: 6.93,  lon: 79.86 }
+  - { name: Dhaka,             lat: 23.81, lon: 90.41 }
+  - { name: Kathmandu,         lat: 27.72, lon: 85.32 }
+  - { name: Karachi,           lat: 24.86, lon: 67.01 }
+  - { name: Lahore,            lat: 31.55, lon: 74.34 }
+  - { name: Islamabad,         lat: 33.68, lon: 73.05 }
+  - { name: Sydney,            lat: -33.87, lon: 151.21 }
+  - { name: Melbourne,         lat: -37.81, lon: 144.96 }
+  - { name: Brisbane,          lat: -27.47, lon: 153.03 }
+  - { name: Perth,             lat: -31.95, lon: 115.86 }
+  - { name: Adelaide,          lat: -34.93, lon: 138.60 }
+  - { name: Canberra,          lat: -35.28, lon: 149.13 }
+  - { name: Auckland,          lat: -36.85, lon: 174.76 }
+  - { name: Wellington,        lat: -41.29, lon: 174.78 }

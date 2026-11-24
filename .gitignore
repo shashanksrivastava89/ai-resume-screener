@@ -1,0 +1,41 @@
+.env
+# The Claude Code MCP registration stays on the developer's machine (2026-10-14): a
+# repo-wide .mcp.json wired every session that opened this folder to candidate data.
+# How to register it locally: docs/12-ASK-CLAUDE-MCP.md §4.
+.mcp.json
+data/
+output/
+.cache/
+.claude/settings.local.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.pytest_cache/
+# Frontend
+web/node_modules/
+web/dist/
+node_modules/
+*.tsbuildinfo
+# cross-process file-lock sidecars (locking.py) — harmless runtime artifacts
+*.lock
+# A derived cache, rewritten on most dashboard loads: it is rebuilt from the files
+# it summarises, deleting it is always safe, and tracking it would mean a diff on
+# every page view (2026-09-10).
+signals/dashboard_index.json
+output/*/candidates_index.json
+venv/
+dist/
+build/
+coverage/
+.env.*
+.storage*/
+dist-scenarios/
+test-results/
+playwright-report/
+.DS_Store
+!.env.example
+!**/.env.example
+!**/.env.*.example

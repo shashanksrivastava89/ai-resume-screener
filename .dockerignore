@@ -1,0 +1,14 @@
+# Never ship into the image: local state, candidate data, secrets, dev clutter.
+.git
+.env
+.venv
+.cache
+.pytest_cache
+__pycache__
+**/__pycache__
+data/
+output/
+web/node_modules
+web/dist
+.streamlit
+*.tmp

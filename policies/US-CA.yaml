@@ -1,0 +1,39 @@
+# California — civil-rights (FEHA/CRD) automated-decision rules + CCPA ADMT.
+
+jurisdiction: US-CA
+
+# Region-specific floor ON TOP of the universal base blocked patterns (2026-07-21).
+# Salary history is a WARN-level never-scored topic elsewhere, but California's
+# pay-transparency law bars using it at all — so here it escalates to BLOCKED.
+# This is the per-jurisdiction floor in action: blocked for California roles,
+# still only warn/HR-Head-approved elsewhere.
+blocked_patterns:
+  - id: ca_salary_history
+    name: Salary-history inquiry (California)
+    reason: >-
+      California's pay-transparency law (Labor Code §432.3) bars asking for or
+      relying on a candidate's salary history. It can never be a screening
+      factor for California roles.
+    severity: blocked
+    floor: true
+    source: seed
+    stages: [preferences, checklist]
+    phrases:
+      - salary history
+      - previous salary
+      - current salary
+      - pay history
+      - compensation history
+      - last drawn
+
+obligations:
+  - "California CRD automated-decision rules: an automated-decision system must never screen out a protected group; keep the automated-decision records for four years."
+  - "CCPA / CPRA: give applicants a notice at collection (what personal information you gather and why), and route any access or opt-out request to HR/Legal."
+
+# California four-year record-keeping expectation: keep the record — and the PII it
+# contains — for the full four years; nothing is purged before the audit duty lapses.
+keep_at_least_days: 1460
+purge_by_days: 1460
+monitoring_categories:
+  - race/ethnicity (voluntary self-identification)
+  - gender (voluntary self-identification)

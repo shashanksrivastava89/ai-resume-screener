@@ -1,0 +1,344 @@
+/* ===========================================================================
+   Edge pages — the three screens shown OUTSIDE the app shell:
+
+     1. the front door        (server-rendered, api/signin_page.py)
+     2. no application access (React, layout/AppShell.tsx)
+     3. please sign in again  (React, layout/AppShell.tsx)
+
+   One stylesheet for all three so they are recognisably one product, loaded by
+   BOTH the server-rendered page (a <link> in its <head>) and index.html. Served
+   straight from web/public, so the server-rendered door does not depend on the
+   400KB app bundle booting — it is answering a request that carries no identity.
+
+   Tokens are declared HERE rather than reused from design-system/tokens/colors.css
+   because that file is bundled by Vite and unreachable from a server-rendered page.
+   The VALUES are copied from it, so the two agree:
+     --brand-green #00A651 · --brand-green-solid #046A38 · --ink #222222
+     --ink-soft #5A5A5A · --neutral-100 #F8F9F6 · --white #FFFFFF
+   Dark mode follows prefers-color-scheme AND the app's own [data-theme] switch,
+   so an edge page rendered inside the app honours the sidebar toggle.
+   =========================================================================== */
+
+/* The front door has no app shell around it, so it owns the document margin. A class
+   rather than an inline <style> in that page: the Content-Security-Policy (2026-10-14)
+   allows styles from this origin's files only. */
+.edge-doc { margin: 0; padding: 0; }
+
+:root {
+  --edge-ground:  #F8F9F6;
+  --edge-card:    #FFFFFF;
+  --edge-ink:     #222222;
+  --edge-soft:    #5A5A5A;
+  --edge-muted:   #636363;
+  --edge-line:    #E3E6E0;
+  --edge-green:   #00A651;
+  --edge-green-d: #046A38;
+  --edge-panel-a: #04703A;   /* brand green, darkened for white text (6.7:1) */
+  --edge-panel-b: #024E28;
+  --edge-warn-bg: #FDF8E4;
+  --edge-warn-ink:#7A6000;
+  --edge-warn-bd: #F2E5A8;
+  --edge-font: Arial, "Helvetica Neue", Helvetica, system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --edge-ground:  #17181A;
+    --edge-card:    #202225;
+    --edge-ink:     #ECEDEA;
+    --edge-soft:    #B2B4AE;
+    --edge-muted:   #9BA096;
+    --edge-line:    #3B3D41;
+    --edge-panel-a: #05502A;
+    --edge-panel-b: #02361C;
+    --edge-warn-bg: #3A3414;
+    --edge-warn-ink:#E3C465;
+    --edge-warn-bd: #4E4526;
+  }
+}
+
+:root[data-theme="dark"] {
+  --edge-ground:  #17181A;
+  --edge-card:    #202225;
+  --edge-ink:     #ECEDEA;
+  --edge-soft:    #B2B4AE;
+  --edge-muted:   #9BA096;
+  --edge-line:    #3B3D41;
+  --edge-panel-a: #05502A;
+  --edge-panel-b: #02361C;
+  --edge-warn-bg: #3A3414;
+  --edge-warn-ink:#E3C465;
+  --edge-warn-bd: #4E4526;
+}
+
+/* --- Shell: brand panel + action card, full viewport ---------------------- */
+
+.edge {
+  min-height: 100vh;
+  min-height: 100dvh;          /* mobile browser chrome shrinks 100vh */
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  background: var(--edge-ground);
+  color: var(--edge-ink);
+  font-family: var(--edge-font);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.edge * { box-sizing: border-box; }
+
+/* The brand half. A flat two-stop gradient plus one soft radial — no image, so
+   the door costs nothing to load and there is no asset to go stale. */
+.edge-brand {
+  position: relative;
+  overflow: hidden;
+  padding: 56px 60px;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(115% 85% at 8% 6%, rgba(255,255,255,.14), transparent 60%),
+    linear-gradient(150deg, var(--edge-panel-a), var(--edge-panel-b));
+  color: #fff;
+}
+
+/* Two outsized rings, mostly off-canvas: depth without a photograph. */
+.edge-brand::after {
+  content: "";
+  position: absolute;
+  right: -210px;
+  bottom: -240px;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.16);
+  box-shadow: 0 0 0 70px rgba(255,255,255,.05);
+  pointer-events: none;
+}
+
+.edge-logo { height: 30px; width: auto; display: block; }
+
+.edge-brand-body { margin: auto 0; }
+
+.edge-eyebrow {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.72);
+  margin: 0 0 10px;
+}
+
+.edge-title {
+  font-size: 40px;
+  line-height: 1.1;
+  font-weight: 700;
+  margin: 0 0 14px;
+  letter-spacing: -.5px;
+}
+
+.edge-lede {
+  font-size: 15.5px;
+  color: rgba(255,255,255,.86);
+  margin: 0 0 34px;
+  max-width: 42ch;
+}
+
+.edge-points { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+
+.edge-points li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 13.5px;
+  color: rgba(255,255,255,.9);
+  max-width: 44ch;
+}
+
+.edge-points svg { flex: 0 0 auto; margin-top: 2px; }
+
+.edge-points b { font-weight: 700; color: #fff; }
+
+.edge-foot {
+  margin: 40px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,.18);
+  font-size: 11.5px;
+  color: rgba(255,255,255,.66);
+  max-width: 48ch;
+}
+
+/* The action half. */
+.edge-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 40px;
+}
+
+.edge-card {
+  width: 100%;
+  max-width: 392px;
+  background: var(--edge-card);
+  border: 1px solid var(--edge-line);
+  border-radius: 18px;
+  padding: 38px 36px;
+  box-shadow: 0 14px 40px rgba(0,0,0,.07);
+}
+
+/* On the no-access screen the card carries a role list and can run long. */
+.edge-card.is-wide { max-width: 460px; }
+
+.edge-mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: block;
+  margin: 0 0 22px;
+}
+
+.edge-h {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 8px;
+  letter-spacing: -.2px;
+  color: var(--edge-ink);
+}
+
+.edge-p { font-size: 13.5px; color: var(--edge-soft); margin: 0 0 24px; }
+
+.edge-p strong { color: var(--edge-ink); }
+
+/* --- The Microsoft button ------------------------------------------------- */
+
+.edge-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 13px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--edge-green-d);
+  color: #fff;
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 140ms ease, transform 140ms ease;
+}
+
+.edge-btn:hover { background: #03562d; }
+.edge-btn:active { transform: translateY(1px); }
+.edge-btn:focus-visible { outline: 3px solid #7fc9a4; outline-offset: 2px; }
+
+.edge-hint {
+  margin: 22px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--edge-line);
+  font-size: 12px;
+  color: var(--edge-muted);
+}
+
+.edge-hint strong { color: var(--edge-soft); }
+
+/* --- Blocks used by the no-access card ----------------------------------- */
+
+.edge-note {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--edge-warn-ink);
+  background: var(--edge-warn-bg);
+  border: 1px solid var(--edge-warn-bd);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 0 0 16px;
+}
+
+.edge-note strong { color: var(--edge-warn-ink); }
+
+.edge-account {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--edge-ink);
+  background: var(--edge-ground);
+  border: 1px solid var(--edge-line);
+  border-radius: 8px;
+  padding: 9px 12px;
+  margin: 0 0 16px;
+  word-break: break-all;
+}
+
+.edge-roles { display: grid; gap: 5px; margin: 16px 0 0; font-size: 12.5px; }
+
+.edge-roles div {
+  padding: 8px 12px;
+  background: var(--edge-ground);
+  border-radius: 8px;
+  color: var(--edge-soft);
+}
+
+.edge-roles b { color: var(--edge-ink); }
+
+.edge-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
+
+/* Secondary control, matching the DS ghost button closely enough to sit beside
+   the primary without importing the whole component layer. */
+.edge-btn-2 {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 15px;
+  border: 1px solid var(--edge-green-d);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--edge-green-d);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.edge-btn-2:hover { background: rgba(4,106,56,.07); }
+.edge-btn-2:focus-visible { outline: 3px solid #7fc9a4; outline-offset: 2px; }
+
+.edge-pre {
+  width: 100%;
+  margin-top: 10px;
+  min-height: 132px;
+  resize: vertical;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  padding: 9px 11px;
+  color: var(--edge-ink);
+  background: var(--edge-ground);
+  border: 1px solid var(--edge-line);
+  border-radius: 8px;
+}
+
+/* --- Narrow screens: the brand panel becomes a header -------------------- */
+
+@media (max-width: 900px) {
+  /* Rows sized to content, then the card takes the rest: an even 50/50 split
+     left the brand header stretched with dead green below the lede. */
+  .edge { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .edge-brand { padding: 30px 28px 34px; }
+  .edge-brand::after { display: none; }
+  .edge-brand-body { margin: 26px 0 0; }
+  .edge-title { font-size: 28px; }
+  .edge-lede { margin-bottom: 22px; font-size: 14.5px; }
+  /* The three points are reassurance, not instruction: on a phone the sign-in
+     button matters more than the pitch, so they drop out of the flow. */
+  .edge-points, .edge-foot { display: none; }
+  .edge-action { padding: 30px 24px 48px; }
+  .edge-card { box-shadow: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .edge-btn { transition: none; }
+  .edge-btn:active { transform: none; }
+}

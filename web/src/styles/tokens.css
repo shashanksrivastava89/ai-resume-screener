@@ -1,0 +1,205 @@
+/* App-specific token layer. The Acme DS :root blocks come from the vendored files
+   (web/design-system/tokens/*.css), imported before this file in main.tsx; this file
+   holds app aliases, canvas chrome, and the ACCESSIBILITY corrections below.
+
+   ---------------------------------------------------------------------------
+   CONTRAST CORRECTIONS (2026-08-20) — measured, not eyeballed
+   ---------------------------------------------------------------------------
+   Every colour the app uses as TEXT was measured against all six light surfaces it
+   can land on (white, app canvas #F8F9F6, subtle #F4F4F4, and the green/yellow/blue
+   tint washes). Four of them failed WCAG AA (4.5:1) on some or all of those
+   surfaces, and between them they account for ~350 usages:
+
+     token                 was       worst ratio        now       worst ratio
+     --ink-muted           #797979   3.46 (green tint)  #636363   4.78
+     --brand-green-deep    #008943   3.59 (green tint)  #046A38   5.35
+     --warn-ink            #8A6D00   3.92 (green tint)  #7A6000   4.77
+     --status-warning      #C8920A   2.21 (green tint)  #7A6000   4.77
+     --ink-muted (dark)    #878A83   3.56 (yellow tint) #9BA096   4.68
+
+   These are DARKENED DERIVATIONS of the existing brand hues, not new colours — the
+   same move the DS itself already made for --status-warning ("darkened brand yellow
+   for legible text"). The hue family is unchanged, so the palette stays locked; only
+   the luminance moves, and only far enough to pass.
+
+   --brand-green (#00A651) is deliberately NOT changed: at 3.19:1 it is correct for
+   fills, borders, score bars and large type, and the DS forbids it as body text. What
+   WAS wrong is white text on top of it (3.19:1) — that is what --brand-green-solid
+   below is for. Reach for it any time a green fill carries white text.
+   =========================================================================== */
+
+:root {
+  --ease: var(--ease-standard); /* alias used by app.css */
+
+  /* --- The brand green, one step deeper (2026-09-06, pilot feedback) ----------
+     The pilot read the bright DS green (#00A651) as glare and preferred the deeper
+     green the Must-have pill wears. --brand-green now resolves to that deeper green
+     wherever it is a FILL, a BORDER or a BAR (primary buttons, active pills, the
+     switch, checkboxes, tab underlines, score bars); the bright original stays
+     available as --brand-green-bright for the one place a lift is wanted (the
+     magic button's ring). White text on the deeper green passes AA at 6.72:1 —
+     the button face and its label no longer need a separate token. Tints and the
+     text-green (--brand-green-deep) are unchanged. */
+  --brand-green:        #046A38;
+  --brand-green-bright: #00A651;
+  --brand-green-hover:  #03532C;  /* a primary button's hover, one step deeper still */
+
+  /* --- Accessibility corrections (see the table above) --------------------- */
+  --ink-muted:        #636363;
+  --brand-green-deep: #046A38;
+  /* A green fill that white text can legibly sit on (6.72:1 vs white). Use for
+     solid green buttons and active segmented-control segments; --brand-green stays
+     the anchor for borders, bars and tints. */
+  --brand-green-solid: #046A38;
+
+  /* warm amber "attention" ink for the eval + pending banners (palette has no red) */
+  --warn-ink: #7A6000;
+  --warn-ink-soft: #6E5700;
+  --warn-dot: #E0B400;
+  --warn-border: #F2E5A8;
+  --status-warning: #7A6000;   /* was #C8920A — failed as text on every surface */
+
+  /* informational blue ink on the blue tint surfaces (dark mode lightens it) */
+  --info-ink: #0F6588;
+  /* Link text. The DS --link-blue (#40AFFF) is 2.39:1 on white — an accent for
+     fills, never for text; this is the readable member of the same family. */
+  --text-link: #0F6588;
+
+  /* An always-dark surface for deliberately-inverted chrome (toasts, the scoring
+     draft bar). It must NOT flip in dark mode — those elements are dark by design
+     and carry white text — so it is defined once here and never overridden below
+     (unlike var(--ink), whose near-white dark value made white-on-white). */
+  --surface-inverted: #24262B;
+  --on-inverted: #FFFFFF;
+
+  /* --- Semantic hues (2026-09-05) --------------------------------------------
+     The app read as one green. B2C products use a SMALL set of hues, each of which
+     means one thing, so colour carries information instead of decoration:
+       green  = brand · primary action · complete / strong        (the anchor)
+       violet = people · review · preferences · hiring managers
+       blue   = information · history · audit · jurisdictions
+       teal   = configuration · checklist · the scoring model
+       amber  = needs attention · pending · possible · discuss    (was --warn-*)
+       orange = activity · a run in flight · feature flags
+       rose   = destructive only: delete, stop, error             (never a band)
+       slate  = neutral · draft · not a fit (distinct from body text, never harsh)
+     Three tokens per hue: -ink (text; ≥ 4.5:1 on its tint AND on the card),
+     -tint (the soft fill), -solid (a fill white text can sit on). Every pair is
+     MEASURED, not eyeballed — see the contrast script in the 2026-09-05 commit. */
+  --hue-green-ink:   #046A38;  --hue-green-tint:  #CCEDDC;  --hue-green-solid:  #046A38;
+  --hue-violet-ink:  #5B21B6;  --hue-violet-tint: #EFE9FE;  --hue-violet-solid: #6D28D9;
+  --hue-blue-ink:    #1D4ED8;  --hue-blue-tint:   #E8F0FE;  --hue-blue-solid:   #2563EB;
+  --hue-teal-ink:    #0F766E;  --hue-teal-tint:   #DDF5F1;  --hue-teal-solid:   #0F766E;
+  --hue-amber-ink:   #7A6000;  --hue-amber-tint:  #FDF8E4;  --hue-amber-solid:  #B45309;
+  --hue-orange-ink:  #B43F0B;  --hue-orange-tint: #FFEEDD;  --hue-orange-solid: #C2410C;
+  --hue-rose-ink:    #BE123C;  --hue-rose-tint:   #FFE9EC;  --hue-rose-solid:   #BE123C;
+  --hue-slate-ink:   #475569;  --hue-slate-tint:  #EEF2F6;  --hue-slate-solid:  #475569;
+
+  /* --- Chip scale (2026-08-20) -------------------------------------------
+     Chips were overflowing their containers because they had no max width, no
+     truncation and no wrap contract — a long skill name pushed the row wider than
+     its cell. These drive the shared .chip / .chip-row classes in app.css. */
+  --chip-h: 22px;
+  --chip-pad-x: 9px;
+  --chip-radius: 999px;
+  --chip-font: 11.5px;
+  --chip-max-w: 190px;   /* beyond this a chip ellipsises rather than pushing out */
+
+  /* --- Elevation + focus -------------------------------------------------- */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+}
+
+/* ---- Dark mode (2026-07-19) ------------------------------------------------
+   The whole app styles itself through the DS custom properties (surfaces read
+   var(--white), canvas var(--neutral-100), text var(--ink) …), so dark mode is
+   a token override under [data-theme="dark"] on <html>. The toggle lives in
+   the sidebar footer; the choice persists in localStorage (web/src/theme.ts).
+   Brand green stays; the "deep" text-green lightens for dark-surface contrast. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --white:        #202225;  /* card surface */
+  --ink:          #ECEDEA;
+  --ink-soft:     #B2B4AE;
+  --ink-muted:    #9BA096;  /* was #878A83 — 3.56:1 on the yellow tint */
+  --neutral-100:  #17181A;  /* app canvas */
+  --neutral-150:  #2A2C2F;  /* off-surface rows / rails */
+  --neutral-200:  #2C2E27;  /* warm brand off-white -> warm charcoal */
+  --neutral-300:  #3B3D41;  /* border-subtle */
+  --neutral-400:  #4E5157;  /* border-strong */
+
+  --brand-green-deep: #3FC584;  /* text-green, lifted for dark legibility */
+  --brand-green-tint: #17382A;  /* green surface wash */
+  /* fills keep the deep green (white text 6.72:1); hover lifts rather than darkens */
+  --brand-green-hover: #0B7A43;
+  /* On dark, a green fill needs DARK text. This works without a separate rule because
+     the label reads var(--white), which is #202225 here — so the pairing inverts with
+     the theme: #FFFFFF on #046A38 = 6.72:1 light, #202225 on #3FC584 = 7.24:1 dark. */
+  --brand-green-solid: #3FC584;
+  --accent-blue-tint: #16323B;
+  --accent-yellow-tint: #3A3414;
+  --status-warning: #E3B84E;
+
+  --warn-ink: #E3C465;
+  --warn-ink-soft: #D2B354;
+  --warn-border: #55491E;
+  --info-ink: #7CC8E0;
+  --text-link: #7CC8E0;
+
+  /* Semantic hues on dark: lifted inks on deep, desaturated tints (all ≥ 4.5:1
+     on the tint and on the #202225 card — measured). Solids keep DARK text. */
+  --hue-green-ink:   #3FC584;  --hue-green-tint:  #17382A;  --hue-green-solid:  #3FC584;
+  --hue-violet-ink:  #C9B8FF;  --hue-violet-tint: #2A2140;  --hue-violet-solid: #8B6CF6;
+  --hue-blue-ink:    #8FBBFF;  --hue-blue-tint:   #1B2A44;  --hue-blue-solid:   #4F86F7;
+  --hue-teal-ink:    #5EEAD4;  --hue-teal-tint:   #123B36;  --hue-teal-solid:   #2DD4BF;
+  --hue-amber-ink:   #E3C465;  --hue-amber-tint:  #3A3414;  --hue-amber-solid:  #E3B84E;
+  --hue-orange-ink:  #FDBA74;  --hue-orange-tint: #3B2415;  --hue-orange-solid: #F97316;
+  --hue-rose-ink:    #FDA4AF;  --hue-rose-tint:   #3F1A22;  --hue-rose-solid:   #FB7185;
+  --hue-slate-ink:   #CBD5E1;  --hue-slate-tint:  #2A3140;  --hue-slate-solid:  #94A3B8;
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45), 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.55), 0 4px 8px rgba(0, 0, 0, 0.35);
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #4E5157;
+  border-color: var(--neutral-100);
+}
+
+html, body, #root { height: 100%; margin: 0; }
+/* The app canvas is the warm off-white app surface, not the DS page white. */
+body { background: var(--surface-app); }
+
+/* App headings are sized explicitly per screen, so drop the big base h1 default. */
+h1, h2, h3, h4 { margin: 0; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: #D6D6D0; border-radius: 999px; border: 2px solid var(--neutral-100); }
+
+@keyframes brss-spin { to { transform: rotate(360deg); } }
+@keyframes brss-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+/* fill-mode `backwards` (not `both`): a persisted end-frame transform would make
+   every .rise container a containing block for position:fixed descendants,
+   re-anchoring tooltips/dialogs away from the viewport. */
+.rise { animation: brss-rise 0.24s var(--ease) backwards; }
+
+/* Live "screening in progress" dot — used in the Requisitions list Candidates
+   column while a batch is running. */
+@keyframes brss-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+/* the v3 design's section-flash (goSection scroll targets on the Scoring page) */
+@keyframes brss-flash {
+  0% { box-shadow: 0 0 0 0 rgba(0, 166, 81, 0); }
+  25% { box-shadow: 0 0 0 5px rgba(0, 166, 81, 0.38); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 166, 81, 0); }
+}
+.brss-pulse { animation: brss-pulse 1.1s var(--ease) infinite; }
+
+/* Respect the OS "reduce motion" setting — the rise/pulse/flash animations are
+   decorative, and a pulsing dot is an accessibility problem for some users. */
+@media (prefers-reduced-motion: reduce) {
+  .rise, .brss-pulse { animation: none; }
+  * { transition-duration: 0.01ms !important; }
+}

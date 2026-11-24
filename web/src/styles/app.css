@@ -1,0 +1,942 @@
+/* Component + interaction styles. The .btn / .input / .textarea / .select rules
+   below are copied VALUE-FOR-VALUE from the Acme Design System components
+   (_ds_bundle.js: .br-btn, .br-input, .br-select) so the app renders the exact
+   design-system controls. App-layout-only classes (nav-link, pill, card-hover)
+   have no DS equivalent and are the mockup's own inline styles, factored out. */
+
+/* --- Buttons (DS .br-btn) -------------------------------------------------- */
+.btn {
+  --_bg: var(--brand-green);
+  --_fg: var(--white);
+  --_bd: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+  font-weight: var(--weight-bold);
+  border: var(--border-medium) solid var(--_bd);
+  background: var(--_bg);
+  color: var(--_fg);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background var(--duration-base) var(--ease-standard),
+    color var(--duration-base) var(--ease-standard),
+    border-color var(--duration-base) var(--ease-standard),
+    box-shadow var(--duration-base) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+.btn:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+.btn:not(:disabled):active { transform: translateY(1px); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+
+.btn-md { font-size: 15px; padding: 10px 22px; }
+.btn-sm { font-size: 13px; padding: 7px 16px; }
+
+.btn-primary { --_bg: var(--brand-green); --_fg: var(--white); --_bd: transparent; }
+.btn-primary:not(:disabled):hover { --_bg: var(--brand-green-hover); }
+
+.btn-secondary { --_bg: transparent; --_fg: var(--brand-green-deep); --_bd: var(--brand-green); }
+.btn-secondary:not(:disabled):hover { --_bg: var(--brand-green-tint); }
+
+.btn-ghost { --_bg: transparent; --_fg: var(--ink); --_bd: transparent; }
+.btn-ghost:not(:disabled):hover { --_bg: var(--neutral-150); }
+
+/* Magic action: app-only (spends AI/DI). Solid deep-green face (white text is
+   AA at 4.51:1), bright-green ring, glow on hover. Face never lightens. */
+.btn-magic {
+  --_bg: var(--brand-green-deep);
+  --_fg: var(--white);
+  --_bd: var(--brand-green-bright);
+  box-shadow: 0 0 0 0 rgba(0, 166, 81, 0);
+}
+.btn-magic:not(:disabled):hover { box-shadow: 0 0 0 4px rgba(0, 166, 81, 0.18), var(--shadow-sm); }
+
+/* Plain text back-link (not a pill button) */
+.link-back { transition: color 0.14s var(--ease); }
+.link-back:hover { color: var(--ink) !important; }
+
+/* --- Form controls (DS .br-input / .br-select) ----------------------------- */
+.input,
+.textarea,
+.select {
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--ink);
+  background: var(--white);
+  border: var(--border-thin) solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  width: 100%;
+  transition: border-color var(--duration-base) var(--ease-standard),
+    box-shadow var(--duration-base) var(--ease-standard);
+}
+.input { padding: 10px 12px; }
+.textarea { padding: 10px 12px; line-height: 1.5; resize: vertical; }
+.select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 10px 38px 10px 12px;
+  cursor: pointer;
+  background-color: var(--white);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235A5A5A' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 13px center;
+}
+.input::placeholder,
+.textarea::placeholder { color: var(--ink-muted); }
+.input:hover,
+.textarea:hover,
+.select:hover { border-color: var(--ink-muted); }
+.input:focus,
+.textarea:focus,
+.select:focus {
+  outline: none;
+  border-color: var(--brand-green);
+  box-shadow: var(--shadow-focus);
+}
+
+/* --- App layout classes (no DS equivalent; the mockup's own inline styles) -- */
+.card-hover {
+  transition: box-shadow 0.18s var(--ease), transform 0.18s var(--ease),
+    border-color 0.18s var(--ease);
+}
+.card-hover:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+
+/* The v3 design's hero/metric hover — the green-tint wash the prototype puts on
+   its clickable metric cards (style-hover="background: var(--brand-green-tint)"). */
+.hero-hover { transition: background 0.15s var(--ease), border-color 0.15s var(--ease); }
+.hero-hover:hover { background: var(--brand-green-tint) !important; }
+
+/* Requisition-name cells: the WHOLE cell is the click target (easier to hit than
+   the text alone) and it washes green on hover like the hero numbers. */
+td.req-cell { cursor: pointer; transition: background 0.15s var(--ease); }
+td.req-cell:hover { background: var(--brand-green-tint); }
+
+/* One-shot row blink when a screening run completes (2026-07-19): a momentary
+   green wash that fades out — visible, never persistent. Background-only, so
+   the fill-mode can't leave a transform behind (the OverlayRoot lesson). */
+@keyframes brss-row-blink {
+  0%, 55% { background: var(--brand-green-tint); }
+  100% { background: transparent; }
+}
+tr.row-blink > td { animation: brss-row-blink 2.4s var(--ease) 1; }
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.14s var(--ease), color 0.14s var(--ease);
+}
+.nav-link:hover { background: var(--neutral-150); color: var(--ink); }
+.nav-link.active { background: var(--brand-green-tint); color: var(--brand-green-deep); }
+.nav-link.active:hover { color: var(--brand-green-deep); }
+
+/* Coloured icon tiles (2026-09-05): each destination carries its own hue, the way
+   B2C settings screens do, so the sidebar scans by colour before it is read. The
+   active row takes the item's OWN tint rather than green-for-everything. */
+.nav-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 8px; flex: 0 0 auto;
+  background: var(--_tint, var(--neutral-150)); color: var(--_ink, var(--ink-soft));
+  transition: transform 0.14s var(--ease);
+}
+.nav-link:hover .nav-icon { transform: translateY(-1px); }
+.nav-link.active .nav-icon { box-shadow: 0 0 0 2px var(--white); }
+.nav-hue-green  { --_tint: var(--hue-green-tint);  --_ink: var(--hue-green-ink); }
+.nav-hue-violet { --_tint: var(--hue-violet-tint); --_ink: var(--hue-violet-ink); }
+.nav-hue-blue   { --_tint: var(--hue-blue-tint);   --_ink: var(--hue-blue-ink); }
+.nav-hue-teal   { --_tint: var(--hue-teal-tint);   --_ink: var(--hue-teal-ink); }
+.nav-hue-amber  { --_tint: var(--hue-amber-tint);  --_ink: var(--hue-amber-ink); }
+.nav-hue-orange { --_tint: var(--hue-orange-tint); --_ink: var(--hue-orange-ink); }
+.nav-hue-rose   { --_tint: var(--hue-rose-tint);   --_ink: var(--hue-rose-ink); }
+.nav-hue-slate  { --_tint: var(--hue-slate-tint);  --_ink: var(--hue-slate-ink); }
+.nav-link.active.nav-hue-green  { background: var(--hue-green-tint);  color: var(--hue-green-ink); }
+.nav-link.active.nav-hue-violet { background: var(--hue-violet-tint); color: var(--hue-violet-ink); }
+.nav-link.active.nav-hue-blue   { background: var(--hue-blue-tint);   color: var(--hue-blue-ink); }
+.nav-link.active.nav-hue-teal   { background: var(--hue-teal-tint);   color: var(--hue-teal-ink); }
+.nav-link.active.nav-hue-amber  { background: var(--hue-amber-tint);  color: var(--hue-amber-ink); }
+.nav-link.active.nav-hue-orange { background: var(--hue-orange-tint); color: var(--hue-orange-ink); }
+.nav-link.active.nav-hue-rose   { background: var(--hue-rose-tint);   color: var(--hue-rose-ink); }
+.nav-link.active.nav-hue-slate  { background: var(--hue-slate-tint);  color: var(--hue-slate-ink); }
+
+/* Metric cards on the dashboard: a hue per measure, carried by the number and a
+   slim top accent, so the four cards stop reading as one repeated green block. */
+.metric-card { position: relative; overflow: hidden; }
+.metric-card::before {
+  content: ""; position: absolute; inset: 0 auto auto 0; height: 3px; width: 100%;
+  background: var(--_accent, var(--brand-green)); opacity: .9;
+}
+.metric-card .metric-value { color: var(--_ink, var(--brand-green-deep)); }
+.metric-card.is-active { box-shadow: 0 0 0 1.5px var(--_accent, var(--brand-green)) inset; }
+.metric-hue-green  { --_accent: var(--hue-green-solid);  --_ink: var(--hue-green-ink); }
+.metric-hue-violet { --_accent: var(--hue-violet-solid); --_ink: var(--hue-violet-ink); }
+.metric-hue-amber  { --_accent: var(--hue-amber-solid);  --_ink: var(--hue-amber-ink); }
+.metric-hue-slate  { --_accent: var(--hue-slate-solid);  --_ink: var(--hue-slate-ink); }
+.metric-hue-blue   { --_accent: var(--hue-blue-solid);   --_ink: var(--hue-blue-ink); }
+
+/* The dashboard hero: a faint green→blue wash instead of flat white, so the one
+   readout on the page has warmth without becoming a click target. */
+.hero-wash {
+  background:
+    linear-gradient(100deg, var(--hue-green-tint) 0%, transparent 42%),
+    linear-gradient(280deg, var(--hue-blue-tint) 0%, transparent 38%),
+    var(--white);
+}
+
+/* --- Layout (2026-09-05) ----------------------------------------------------- */
+
+/* The one status strip that replaced three stacked notice bars. */
+.status-strip {
+  flex: 0 0 auto;
+  display: flex; align-items: center; gap: 14px;
+  padding: 6px 24px; min-height: 34px;
+  background: var(--neutral-150);
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 12px; color: var(--ink-soft);
+}
+.status-note {
+  display: inline-flex; align-items: center; gap: 6px; min-width: 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.status-note strong { color: var(--ink); }
+.status-note-warn { color: var(--warn-ink-soft); }
+.status-note-warn strong, .status-note-warn svg { color: var(--warn-ink); }
+.status-note-text { overflow: hidden; text-overflow: ellipsis; }
+/* The evaluation note is the standing constraint (§0): it never ellipsises away
+   entirely — the others yield first. */
+.status-note-warn { flex: 1 1 auto; }
+.status-note:not(.status-note-warn) { flex: 0 1 auto; }
+
+/* The dashboard summary row: the readout tile leads, then the filter cards. */
+/* 2026-09-06: the lead readout tile is gone (the screened total is a quiet line in
+   the header now), so the row is simply the requisition counters, equal width,
+   wrapping on their own below ~900px. */
+.summary-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 14px; margin-bottom: 20px;
+}
+
+/* The action column stays reachable: sticky to the right edge of the scrolling
+   table, opaque so rows scroll under it, with a hairline to show it's pinned. */
+.table-wrap th.col-action, .table-wrap td.col-action {
+  position: sticky; right: 0; z-index: 1;
+  background: var(--white);
+  box-shadow: -1px 0 0 var(--neutral-150);
+}
+.table-wrap thead th.col-action { z-index: 2; }
+tr.row-blink > td.col-action { animation: none; }
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-subtle);
+  background: var(--white);
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.14s var(--ease), border-color 0.14s var(--ease),
+    color 0.14s var(--ease);
+}
+.pill:hover { border-color: var(--border-strong); }
+.pill.active {
+  background: var(--brand-green-tint);
+  border-color: var(--brand-green-tint);
+  color: var(--brand-green-deep);
+}
+/* A filter that cannot match anything under the current view: still THERE (removing
+   it would reflow the row) but plainly unavailable, with the reason on hover. */
+.pill.is-off { opacity: .45; cursor: not-allowed; }
+.pill.is-off:hover { border-color: var(--border-subtle); }
+
+.scroll-x { overflow-x: auto; }
+
+/* Checklist editor + JD reference pane: two columns that stack (JD on top) on
+   narrow screens. Inline styles can't media-query, so this one class carries it. */
+.checklist-layout { display: flex; gap: 20px; align-items: flex-start; }
+.checklist-layout > .checklist-main { flex: 1 1 auto; min-width: 0; }
+@media (max-width: 1100px) {
+  .checklist-layout { flex-direction: column-reverse; }
+  .checklist-layout > aside { position: static !important; max-height: none !important; width: 100%; }
+}
+
+/* Review drawer resize handle — invisible until hover/focus/drag. */
+.drawer-resize:hover,
+.drawer-resize:focus-visible,
+.drawer-resize[data-dragging] {
+  background: var(--brand-green-tint);
+  box-shadow: inset 2px 0 0 var(--brand-green);
+  outline: none;
+}
+
+/* ===========================================================================
+   Chips (2026-08-20)
+   ---------------------------------------------------------------------------
+   The reported "chips overflow" is really a width cascade: chips had no max
+   width and no truncation, so one long skill name or a wordy law label
+   ("DPDP Act 2023") widened its table cell, which widened the table, which
+   pushed the ACTION column out of the viewport. On a 1024px-wide window the
+   requisitions table's intrinsic width was 1081px and the primary button for
+   every row sat behind a horizontal scroll.
+
+   The fix is a contract rather than a per-site patch: a chip is ONE line, never
+   wider than --chip-max-w, and ellipsises past it. Always pair with a title
+   attribute so the full text stays available on hover.
+   =========================================================================== */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: var(--chip-max-w);
+  height: var(--chip-h);
+  padding: 0 var(--chip-pad-x);
+  border-radius: var(--chip-radius);
+  font-size: var(--chip-font);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  background: var(--neutral-150);
+  color: var(--ink-soft);
+  border: 1px solid transparent;
+}
+/* The label truncates, not the icon: an icon shrunk to 0 leaves a chip that
+   looks like a rendering bug, so the text is the flexible part. */
+.chip > .chip-label { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.chip > svg { flex: 0 0 auto; }
+
+.chip-brand { background: var(--brand-green-tint); color: var(--brand-green-deep); }
+.chip-warn  { background: var(--surface-warn); color: var(--warn-ink); border-color: var(--warn-border); }
+.chip-info  { background: var(--accent-blue-tint); color: var(--info-ink); }
+.chip-quiet { background: transparent; color: var(--ink-muted); border-color: var(--border-subtle); }
+.chip-solid { background: var(--surface-inverted); color: var(--on-inverted); }
+/* The semantic hues (tokens.css) as chip tones — each hue means one thing. */
+.chip-green  { background: var(--hue-green-tint);  color: var(--hue-green-ink); }
+.chip-violet { background: var(--hue-violet-tint); color: var(--hue-violet-ink); }
+.chip-blue   { background: var(--hue-blue-tint);   color: var(--hue-blue-ink); }
+.chip-teal   { background: var(--hue-teal-tint);   color: var(--hue-teal-ink); }
+.chip-amber  { background: var(--hue-amber-tint);  color: var(--hue-amber-ink); }
+.chip-orange { background: var(--hue-orange-tint); color: var(--hue-orange-ink); }
+.chip-rose   { background: var(--hue-rose-tint);   color: var(--hue-rose-ink); }
+.chip-slate  { background: var(--hue-slate-tint);  color: var(--hue-slate-ink); }
+
+/* A wrapping row of chips. min-width:0 is load-bearing: without it a flex item
+   refuses to shrink below its content and the truncation above never engages. */
+.chip-row { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
+/* Single-line variant for table cells — no wrap, the row itself clips. */
+.chip-row-1 { display: flex; gap: 6px; min-width: 0; overflow: hidden; }
+
+/* ===========================================================================
+   Data tables — keep the ACTION column reachable
+   =========================================================================== */
+.table-wrap { overflow-x: auto; min-width: 0; }
+
+/* Columns ranked by how much a recruiter needs them at a glance, so narrow
+   windows shed the least useful ones instead of hiding the button that does the
+   work. Nothing is lost — every value here is also on the requisition's own
+   Overview tab. */
+/* The numbers account for the chrome, not just the viewport: the sidebar plus page
+   padding takes ~332px, so the table's usable width is roughly (viewport - 332).
+   Measured intrinsic widths of the requisitions table are ~1081px with every column,
+   ~792px without the optional pair, and ~692px without Location too — which is what
+   sets 1200 and 1120 below. Verified in the running app at 1440/1280/1100/1024. */
+@media (max-width: 1200px) { .col-optional { display: none; } }
+@media (max-width: 1120px) { .col-secondary { display: none; } }
+
+/* ===========================================================================
+   Focus visibility (2026-08-20)
+   Many controls are bare <button>s with inline styles and no focus style at
+   all, which makes the app effectively unusable by keyboard. One rule covers
+   every interactive element that does not already define its own.
+   =========================================================================== */
+:where(button, a, [role="button"], [tabindex]:not([tabindex="-1"]), input, select, textarea):focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: 6px;
+}
+/* The controls that DO style their own focus keep it (more specific rules win
+   by source order); these opt out of the generic ring to avoid a double ring. */
+.btn:focus-visible, .input:focus-visible, .textarea:focus-visible, .select:focus-visible { outline: none; }
+
+/* Section heading shared by the grouped checklist and the workspace panels. */
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.section-head::after {
+  content: "";
+  flex: 1 1 auto;
+  height: 1px;
+  background: var(--border-subtle);
+}
+
+/* --- Skeleton placeholders (2026-09-05; components/ui.tsx Skeleton) ------------ */
+.skeleton {
+  background: linear-gradient(90deg, var(--neutral-150) 0%, var(--neutral-200) 40%, var(--neutral-150) 80%);
+  background-size: 220% 100%;
+  animation: skeleton-shimmer 1.3s ease-in-out infinite;
+}
+@keyframes skeleton-shimmer {
+  from { background-position: 120% 0; }
+  to   { background-position: -120% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; background: var(--neutral-150); }
+}
+
+/* ===========================================================================
+   People (2026-09-06) — avatars, names, the picker
+   =========================================================================== */
+.avatar {
+  display: inline-flex; align-items: center; justify-content: center;
+  flex: 0 0 auto; border-radius: 50%; object-fit: cover;
+  font-weight: 800; letter-spacing: 0.02em; line-height: 1;
+  background: var(--_tint, var(--neutral-150)); color: var(--_ink, var(--ink-soft));
+}
+.avatar-hue-green  { --_tint: var(--hue-green-tint);  --_ink: var(--hue-green-ink); }
+.avatar-hue-violet { --_tint: var(--hue-violet-tint); --_ink: var(--hue-violet-ink); }
+.avatar-hue-blue   { --_tint: var(--hue-blue-tint);   --_ink: var(--hue-blue-ink); }
+.avatar-hue-teal   { --_tint: var(--hue-teal-tint);   --_ink: var(--hue-teal-ink); }
+.avatar-hue-amber  { --_tint: var(--hue-amber-tint);  --_ink: var(--hue-amber-ink); }
+.avatar-hue-orange { --_tint: var(--hue-orange-tint); --_ink: var(--hue-orange-ink); }
+.person { display: inline-flex; align-items: center; gap: 6px; min-width: 0; max-width: 100%; vertical-align: middle; }
+.person-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.person-list { display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+.picked-person {
+  display: flex; align-items: center; gap: 10px; min-height: 40px;
+  padding: 5px 8px 5px 6px; border: 1px solid var(--border-subtle); border-radius: 10px;
+  background: var(--white);
+}
+.picked-clear {
+  margin-left: auto; background: none; border: 0; padding: 4px 8px; border-radius: 6px;
+  font: inherit; font-size: 12px; font-weight: 700; color: var(--brand-green-deep); cursor: pointer;
+}
+.picked-clear:hover { background: var(--brand-green-tint); }
+.people-menu {
+  position: absolute; left: 0; right: 0; top: calc(100% + 4px); z-index: 30;
+  background: var(--white); border: 1px solid var(--border-subtle); border-radius: 12px;
+  box-shadow: var(--shadow-md); overflow: hidden; max-height: 320px; overflow-y: auto;
+}
+.people-option {
+  display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 12px;
+  border: 0; border-bottom: 1px solid var(--neutral-150); background: var(--white);
+  font: inherit; cursor: pointer; text-align: left;
+}
+.people-option.is-active, .people-option:hover { background: var(--brand-green-tint); }
+.people-empty { padding: 10px 12px; font-size: 12.5px; color: var(--ink-soft); }
+.people-manual {
+  display: block; width: 100%; padding: 9px 12px; border: 0; border-top: 1px solid var(--neutral-150);
+  background: var(--neutral-100); font: inherit; font-size: 12px; font-weight: 700;
+  color: var(--brand-green-deep); cursor: pointer; text-align: left;
+}
+.link-quiet {
+  background: none; border: 0; padding: 0; font: inherit; font-size: 12.5px;
+  color: var(--ink-soft); text-decoration: underline; text-underline-offset: 2px; cursor: pointer;
+}
+
+/* The law name you can open (HiringRules.tsx). */
+.rules-link {
+  display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 999px;
+  border: 1px solid var(--hue-blue-tint); background: var(--hue-blue-tint); color: var(--hue-blue-ink);
+  font: inherit; font-size: 12px; font-weight: 700; cursor: help; white-space: nowrap;
+}
+.rules-link:hover { border-color: var(--hue-blue-ink); }
+.rules-link.is-quiet { background: none; border-color: transparent; color: inherit; padding: 0 2px; font-weight: inherit; font-size: inherit; text-decoration: underline dotted; text-underline-offset: 3px; }
+.rules-icon { display: inline-flex; width: 22px; height: 22px; border-radius: 6px; align-items: center; justify-content: center; background: var(--hue-blue-tint); color: var(--hue-blue-ink); }
+
+/* ===========================================================================
+   Workspace tabs carry a hue; the canvas takes a faint wash of the open tab
+   (2026-09-06, pilot feedback item 12) so "which page am I on?" is answered by
+   colour before by text.
+   =========================================================================== */
+.tab-hue-green  { --_tab-ink: var(--hue-green-ink);  --_tab-tint: var(--hue-green-tint);  --_tab-solid: var(--hue-green-solid); }
+.tab-hue-violet { --_tab-ink: var(--hue-violet-ink); --_tab-tint: var(--hue-violet-tint); --_tab-solid: var(--hue-violet-solid); }
+.tab-hue-blue   { --_tab-ink: var(--hue-blue-ink);   --_tab-tint: var(--hue-blue-tint);   --_tab-solid: var(--hue-blue-solid); }
+.tab-hue-teal   { --_tab-ink: var(--hue-teal-ink);   --_tab-tint: var(--hue-teal-tint);   --_tab-solid: var(--hue-teal-solid); }
+.tab-hue-amber  { --_tab-ink: var(--hue-amber-ink);  --_tab-tint: var(--hue-amber-tint);  --_tab-solid: var(--hue-amber-solid); }
+.tab-hue-orange { --_tab-ink: var(--hue-orange-ink); --_tab-tint: var(--hue-orange-tint); --_tab-solid: var(--hue-orange-solid); }
+.tab-hue-slate  { --_tab-ink: var(--hue-slate-ink);  --_tab-tint: var(--hue-slate-tint);  --_tab-solid: var(--hue-slate-solid); }
+.tab-hue-rose   { --_tab-ink: var(--hue-rose-ink);   --_tab-tint: var(--hue-rose-tint);   --_tab-solid: var(--hue-rose-solid); }
+.tab-btn.is-on { color: var(--_tab-ink, var(--brand-green-deep)) !important; border-bottom-color: var(--_tab-solid, var(--brand-green)) !important; }
+.tab-btn.is-on .tab-count { background: var(--_tab-tint, var(--brand-green-tint)) !important; color: var(--_tab-ink, var(--brand-green-deep)) !important; }
+.tab-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--_tab-solid, var(--brand-green)); opacity: 0.55; flex: 0 0 auto; }
+.tab-btn.is-on .tab-dot { opacity: 1; }
+
+.ws-canvas { background: var(--surface-app); }
+.ws-hue-green  { background: color-mix(in srgb, var(--hue-green-tint)  38%, var(--surface-app)); }
+.ws-hue-violet { background: color-mix(in srgb, var(--hue-violet-tint) 38%, var(--surface-app)); }
+.ws-hue-blue   { background: color-mix(in srgb, var(--hue-blue-tint)   38%, var(--surface-app)); }
+.ws-hue-teal   { background: color-mix(in srgb, var(--hue-teal-tint)   38%, var(--surface-app)); }
+.ws-hue-orange { background: color-mix(in srgb, var(--hue-orange-tint) 38%, var(--surface-app)); }
+.ws-hue-slate  { background: color-mix(in srgb, var(--hue-slate-tint)  38%, var(--surface-app)); }
+
+/* ===========================================================================
+   Checklist kinds (2026-09-06, item 10): three colours, carried by the row's
+   left accent, the text box border and the segmented pill, so Nice / Must / Gate
+   reads by colour before by word.
+   =========================================================================== */
+.kind-nice_to_have { --kind-ink: var(--hue-blue-ink);  --kind-tint: var(--hue-blue-tint);  --kind-solid: var(--hue-blue-solid);  --kind-border: color-mix(in srgb, var(--hue-blue-solid) 45%, var(--border-strong)); }
+.kind-must_have    { --kind-ink: var(--hue-green-ink); --kind-tint: var(--hue-green-tint); --kind-solid: var(--hue-green-solid); --kind-border: color-mix(in srgb, var(--hue-green-solid) 45%, var(--border-strong)); }
+.kind-hard_gate    { --kind-ink: var(--hue-amber-ink); --kind-tint: var(--hue-amber-tint); --kind-solid: var(--surface-inverted); --kind-border: color-mix(in srgb, var(--surface-inverted) 40%, var(--border-strong)); }
+.req-card { position: relative; border-left: 4px solid var(--kind-solid, var(--border-subtle)) !important; transition: border-color .14s var(--ease); }
+.req-card .req-text { border-color: var(--kind-border, var(--border-strong)) !important; }
+.req-card .req-text:focus { border-color: var(--kind-solid) !important; box-shadow: 0 0 0 3px var(--kind-tint); outline: none; }
+.kind-seg { display: inline-flex; flex: 0 0 auto; white-space: nowrap; border: 1px solid var(--border-subtle); border-radius: 999px; overflow: hidden; font-size: 11px; font-weight: 700; }
+.kind-seg button { border: 0; padding: 6px 11px; font: inherit; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; background: transparent; color: var(--ink-muted); }
+.kind-seg button.is-on { color: var(--white); }
+.kind-seg button.is-on.kind-nice_to_have { background: var(--hue-blue-solid); }
+.kind-seg button.is-on.kind-must_have { background: var(--hue-green-solid); }
+.kind-seg button.is-on.kind-hard_gate { background: var(--surface-inverted); color: var(--on-inverted); }
+.kind-legend { display: inline-flex; align-items: center; gap: 12px; font-size: 11.5px; color: var(--ink-soft); }
+.kind-legend i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+.kind-legend .kind-nice_to_have i { background: var(--hue-blue-solid); }
+.kind-legend .kind-must_have i { background: var(--hue-green-solid); }
+.kind-legend .kind-hard_gate i { background: var(--surface-inverted); }
+.checklist-rail { position: sticky; top: 0; align-self: flex-start; max-height: calc(100vh - 150px); overflow-y: auto; }
+@media (max-width: 1100px) { .checklist-rail { position: static; max-height: none; } }
+
+/* ===========================================================================
+   Review cards take the band colour (2026-09-06, item 14): a 4px accent and a
+   faint wash, so the list reads as a gradient of fit before a word is read.
+   =========================================================================== */
+.rev-card { border-left: 4px solid var(--_band, var(--border-subtle)) !important; }
+.rev-band-strong   { --_band: var(--hue-green-solid); background: color-mix(in srgb, var(--hue-green-tint) 30%, var(--white)) !important; }
+.rev-band-possible { --_band: var(--hue-amber-solid); background: color-mix(in srgb, var(--hue-amber-tint) 40%, var(--white)) !important; }
+.rev-band-not      { --_band: var(--hue-slate-solid); background: color-mix(in srgb, var(--hue-slate-tint) 40%, var(--white)) !important; }
+.rev-list::-webkit-scrollbar { width: 14px; }
+.rev-list::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 999px; border: 3px solid var(--surface-app); }
+.rev-list::-webkit-scrollbar-track { background: transparent; }
+.to-top {
+  position: absolute; right: 28px; bottom: 64px; z-index: 5;
+  display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px;
+  border-radius: 999px; border: 1px solid var(--border-subtle); background: var(--white);
+  color: var(--ink); font: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer;
+  box-shadow: var(--shadow-md);
+}
+
+/* Candidate file rows wear their status as a row tint (item 11): a chip is easy to
+   miss in a 300-row list; a row is not. */
+.file-row { border-left: 4px solid transparent; transition: background .14s var(--ease); }
+.file-row.st-screened   { background: color-mix(in srgb, var(--hue-green-tint) 45%, var(--white)); border-left-color: var(--hue-green-solid); }
+.file-row.st-screening  { background: color-mix(in srgb, var(--hue-blue-tint) 55%, var(--white)); border-left-color: var(--hue-blue-solid); }
+/* "preparing to screen": a run is coming for this row on its own (2026-09-11). Orange
+   = activity, one step before the blue of a live run. */
+.file-row.st-preparing  { background: color-mix(in srgb, var(--hue-orange-tint) 50%, var(--white)); border-left-color: var(--hue-orange-solid); }
+.file-row.st-re_screen  { background: color-mix(in srgb, var(--hue-amber-tint) 60%, var(--white)); border-left-color: var(--hue-amber-solid); }
+.file-row.st-problem    { background: color-mix(in srgb, var(--hue-rose-tint) 45%, var(--white)); border-left-color: var(--hue-rose-solid); }
+.file-row .row-remove { opacity: 0.55; }
+.file-row:hover .row-remove, .file-row .row-remove:focus-visible { opacity: 1; }
+
+/* Whole-row click target on the requisitions table (item 3). */
+.row-link { cursor: pointer; }
+.row-link:hover td { background: var(--neutral-100); }
+.row-link:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: -2px; }
+
+/* The drawer section switcher (item 15). */
+.seg-tabs { display: flex; gap: 2px; padding: 3px; background: var(--neutral-150); border-radius: 10px; }
+.seg-tabs button {
+  flex: 1 1 auto; height: 30px; border: 0; border-radius: 8px; background: transparent;
+  font: inherit; font-size: 12.5px; font-weight: 700; color: var(--ink-soft); cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap;
+}
+.seg-tabs button.is-on { background: var(--white); color: var(--ink); box-shadow: var(--shadow-xs); }
+.seg-tabs .seg-count { font-size: 10.5px; padding: 1px 6px; border-radius: 999px; background: var(--neutral-200); color: var(--ink-soft); }
+.seg-tabs button.is-on .seg-count { background: var(--brand-green-tint); color: var(--brand-green-deep); }
+
+/* ===========================================================================
+   Pilot feedback pass 3 (2026-09-06)
+   =========================================================================== */
+
+/* The importance meter is a CONTROL, and reads as one (item 1): a bordered pill
+   with a caption, bars that preview on hover, and the row's kind colour (blue
+   nice-to-have / green must-have via --kind-solid on the .req-card ancestor). The
+   gate variant fills the same slot with "pass / fail", so switching a row's kind
+   never moves anything else on the row. */
+/* The slot is a FIXED box and both variants fill it exactly (2026-09-07): the meter
+   overflowed its 236px slot and pushed the row wider, so every kind toggle — and
+   every hop to a longer importance label — made the row jump. Nothing inside may
+   size to its content. */
+/* Sized from MEASUREMENT, not taste (2026-09-07): caption 83 + bars 87 + label 76
+   + two 7px gaps + 20px padding + 2px border = 282, so the slot is 292 and nothing
+   presses against the pill's edge. It was 250 and the label sat 1px off the border,
+   which is the "cut off by the boundary" in the report. */
+.imp-slot { flex: 0 0 292px; width: 292px; display: flex; align-items: center; }
+.imp-meter {
+  display: flex; align-items: center; gap: 7px; height: 30px; padding: 0 10px;
+  width: 100%; box-sizing: border-box;
+  border-radius: 999px; border: 1px solid var(--border-subtle); background: var(--white);
+  white-space: nowrap; transition: border-color .12s var(--ease), box-shadow .12s var(--ease);
+}
+.imp-meter.is-editable:hover { border-color: var(--kind-solid, var(--brand-green)); box-shadow: 0 0 0 3px var(--kind-tint, var(--brand-green-tint)); }
+.imp-meter.is-gate { border-style: dashed; background: var(--neutral-100); }
+.imp-caption { font-size: 10.5px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-muted); }
+.imp-bars { display: inline-flex; gap: 3px; align-items: center; }
+.imp-bar {
+  width: 15px; height: 10px; padding: 0; border: 0; border-radius: 3px; cursor: pointer;
+  background: var(--neutral-200); transition: background .1s var(--ease), transform .1s var(--ease);
+}
+.imp-bar:disabled { cursor: default; }
+.imp-bar.is-on { background: var(--kind-solid, var(--brand-green)); }
+.imp-bar.is-preview { background: color-mix(in srgb, var(--kind-solid, var(--brand-green)) 50%, var(--white)); }
+.imp-meter.is-editable .imp-bar:hover { transform: scaleY(1.3); }
+/* A FIXED width, not min-width: "Low–med" is wider than "High", and a label that
+   resizes moves everything to its right (the second half of the row-dance bug). */
+/* Wide enough for the longest label ("Low–med", "Critical") WITH slack: at 56px it
+   fitted to the pixel, so a font fallback or a browser zoom ellipsised it and the
+   value looked cut off at the pill's edge (2026-09-07). Fixed width still, so the
+   row cannot move as the level changes. */
+.imp-label {
+  font-size: 12px; font-weight: 700; color: var(--kind-ink, var(--ink-soft));
+  width: 76px; flex: 0 0 76px; text-align: right;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.imp-meter.is-gate { justify-content: space-between; }
+.imp-meter.is-gate .imp-label { color: var(--ink-soft); flex: 0 0 auto; width: auto; text-align: left; }
+
+/* Checklist version history (2026-09-07, item 3). */
+.ver-link {
+  display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px; border-radius: 999px;
+  border: 1px solid var(--border-subtle); background: var(--white); cursor: pointer;
+  font: inherit; font-size: 11.5px; font-weight: 600; color: var(--ink-soft); white-space: nowrap;
+}
+.ver-link:hover { border-color: var(--hue-teal-solid); color: var(--hue-teal-ink); }
+.ver-link strong { color: var(--ink); font-weight: 800; }
+.ver-link:hover strong { color: var(--hue-teal-ink); }
+.ver-row { border: 1px solid var(--border-subtle); border-radius: 12px; padding: 11px 14px; background: var(--white); }
+.ver-row.is-current { border-color: var(--hue-green-solid); box-shadow: 0 0 0 1px var(--hue-green-solid) inset; }
+.ver-badge {
+  flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+  min-width: 40px; height: 26px; padding: 0 9px; border-radius: 8px;
+  background: var(--neutral-150); color: var(--ink); font-size: 12.5px; font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.ver-row.is-current .ver-badge { background: var(--hue-green-tint); color: var(--hue-green-ink); }
+.ver-kind {
+  margin-left: 8px; padding: 1px 7px; border-radius: 999px; font-size: 10px; font-weight: 700;
+  background: var(--kind-tint, var(--neutral-150)); color: var(--kind-ink, var(--ink-soft));
+  white-space: nowrap;
+}
+
+/* The checklist's publish bar sits at the END of the form, where a next action is
+   looked for, and sticks to the bottom of the scrollport while the form is longer
+   than the screen (item 2). Teal when there is something to publish. */
+.publish-bar {
+  position: sticky; bottom: -1px; z-index: 4;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  margin-top: 6px; padding: 12px 16px;
+  background: var(--white); border: 1px solid var(--border-subtle); border-radius: 14px;
+  box-shadow: 0 -6px 18px rgba(34, 34, 34, .06), var(--shadow-sm);
+}
+.publish-bar.is-dirty { border-color: var(--hue-teal-solid); box-shadow: 0 0 0 1px var(--hue-teal-solid) inset, 0 -6px 18px rgba(34, 34, 34, .08); }
+.publish-status { flex: 1 1 260px; min-width: 0; font-size: 13px; line-height: 1.5; color: var(--ink-soft); }
+.publish-status strong { color: var(--ink); }
+.publish-bar.is-dirty .publish-status { color: var(--hue-teal-ink); font-weight: 700; }
+.publish-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-left: auto; }
+.publish-warn { display: flex; gap: 8px; font-size: 12.5px; line-height: 1.5; color: var(--warn-ink); background: var(--surface-warn); border-radius: 9px; padding: 8px 11px; margin-bottom: 8px; }
+
+/* The workspace header's facts row. QUIET by design (2026-09-07): these say what
+   the requisition IS; the stage chip beside the title says what to do about it, and
+   it has to win. Outlined, one size down, ink-soft — colour returns only when a
+   fact needs attention (no checklist yet). */
+.ws-facts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 10px; }
+.fact {
+  display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 9px;
+  border-radius: 999px; font-size: 11.5px; font-weight: 600; white-space: nowrap;
+  background: transparent; border: 1px solid var(--border-subtle); color: var(--ink-soft);
+}
+.fact svg { flex: 0 0 auto; opacity: .75; }
+.fact-attn { border-color: var(--hue-amber-solid); color: var(--hue-amber-ink); font-weight: 700; }
+.fact-mono { font-family: monospace; letter-spacing: -0.01em; }
+.fact-person { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-muted); white-space: nowrap; }
+
+/* Review: the one number a recruiter watches while filtering (item 6). */
+.shown-count { display: inline-flex; align-items: baseline; gap: 6px; padding-right: 12px; margin-right: 2px; border-right: 1px solid var(--border-subtle); white-space: nowrap; }
+/* The width is reserved from the TOTAL's digit count, so a search narrowing
+   237 → 23 → 2 cannot reflow the filter row (2026-09-07, item 10). */
+.shown-n {
+  font-size: 22px; font-weight: 800; letter-spacing: -0.01em; color: var(--ink);
+  font-variant-numeric: tabular-nums; line-height: 1;
+  min-width: var(--shown-ch, 3ch); text-align: right;
+}
+.shown-of { font-size: 12px; color: var(--ink-soft); font-weight: 700; }
+.shown-of b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.shown-clear { background: none; border: 0; padding: 0 0 0 4px; font: inherit; font-size: 12px; font-weight: 700; color: var(--brand-green-deep); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+
+/* Review: the split location pill — one behaviour: click opens the distance dialog;
+   the ✕ (only while filtering) shows everyone again (item 7). */
+.pill-split { display: inline-flex; align-items: stretch; height: 34px; border-radius: 999px; border: 1px solid var(--border-subtle); background: var(--white); overflow: hidden; }
+.pill-split:hover { border-color: var(--border-strong); }
+.pill-split.active { background: var(--brand-green-tint); border-color: var(--brand-green-tint); }
+.pill-split .pill-main { display: inline-flex; align-items: center; gap: 6px; padding: 0 14px; border: 0; background: none; font: inherit; font-size: 13px; font-weight: 700; color: var(--ink-soft); cursor: pointer; white-space: nowrap; }
+.pill-split.active .pill-main { color: var(--brand-green-deep); }
+.pill-split .pill-x { display: inline-flex; align-items: center; padding: 0 10px 0 6px; border: 0; border-left: 1px solid rgba(4, 106, 56, .18); background: none; color: var(--brand-green-deep); cursor: pointer; }
+.pill-split .pill-x:hover { background: rgba(4, 106, 56, .1); }
+
+/* Review: the bulk bar says that a selection records nothing by itself (item 12). */
+/* ONE row for marking (2026-09-07, item 6): "Mark all" and the marked-count bar
+   were two rows for one idea. Quiet until something is marked, green after. */
+.bulk-bar { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; padding: 9px 24px; background: var(--white); border-bottom: 1px solid var(--border-subtle); flex-wrap: wrap; transition: background .14s var(--ease); }
+.bulk-bar.is-on { background: var(--brand-green-tint); }
+.bulk-bar .bulk-n { font-size: 13px; font-weight: 800; color: var(--brand-green-deep); }
+.bulk-bar .bulk-hint { font-size: 12.5px; color: var(--ink); }
+.bulk-bar .v-divider { width: 1px; height: 20px; background: rgba(4, 106, 56, .25); }
+.bulk-bar .link-quiet { color: var(--ink-soft); font-weight: 700; }
+
+/* The drawer's checklist view switches (item 8). */
+.mini-tabs { display: inline-flex; gap: 2px; padding: 2px; background: rgba(255, 255, 255, .6); border-radius: 8px; flex-wrap: wrap; }
+.mini-tabs button { height: 24px; padding: 0 9px; border: 0; border-radius: 6px; background: transparent; font: inherit; font-size: 11.5px; font-weight: 700; color: var(--hue-teal-ink); cursor: pointer; white-space: nowrap; }
+.mini-tabs button.is-on { background: var(--white); color: var(--ink); box-shadow: var(--shadow-xs); }
+.mini-tabs button:hover:not(.is-on) { background: rgba(255, 255, 255, .8); }
+
+/* ===========================================================================
+   Pilot feedback pass 4 (2026-09-07) — the drawer
+   =========================================================================== */
+
+/* The decision row gets a surface, so the eye stops at it. People were reading a
+   whole drawer without noticing they could decide from inside it. */
+.call-bar {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  margin-top: 10px; padding: 8px 10px; border-radius: 10px;
+  background: var(--neutral-100); border: 1px solid var(--border-subtle);
+}
+
+/* Unmet hard requirements: one line each, the rule said ONCE at the bottom. */
+.gate-block {
+  margin-bottom: 12px; border: 1px solid var(--warn-border); border-radius: 12px;
+  background: var(--surface-warn); padding: 10px 13px;
+}
+.gate-head {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 13.5px; font-weight: 800; color: var(--warn-ink); margin-bottom: 7px;
+}
+.gate-list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 5px; }
+.gate-list li { font-size: 12.5px; line-height: 1.5; color: var(--ink); }
+.gate-tag {
+  margin-left: 7px; padding: 1px 7px; border-radius: 999px; white-space: nowrap;
+  font-size: 10.5px; font-weight: 700; background: var(--white); color: var(--ink-muted);
+  border: 1px solid var(--border-subtle);
+}
+/* Partial evidence is the one a person has to settle — the machine needs "full". */
+.gate-tag-partial { background: var(--hue-amber-tint); color: var(--hue-amber-ink); border-color: var(--hue-amber-solid); }
+.gate-rule { margin-top: 8px; font-size: 11.5px; line-height: 1.5; color: var(--warn-ink-soft); }
+
+/* "Worth a closer look": every reason with somewhere to GO. */
+.flag-block {
+  margin-bottom: 12px; border: 1px solid var(--border-subtle); border-left: 3px solid var(--hue-amber-solid);
+  border-radius: 12px; background: var(--white); padding: 10px 13px;
+}
+.flag-head { font-size: 13px; font-weight: 800; color: var(--ink); margin-bottom: 6px; }
+.flag-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.flag-list li { font-size: 12.5px; line-height: 1.5; color: var(--ink-soft); }
+.flag-action {
+  margin-left: 6px; background: none; border: 0; padding: 0; cursor: pointer;
+  font: inherit; font-size: 12.5px; font-weight: 700; color: var(--brand-green-deep);
+  white-space: nowrap;
+}
+.flag-action:hover { text-decoration: underline; }
+
+/* The screening-checklist header carries the view switches, so it must survive a
+   scroll past it (item 12) — and it must not resize as the view changes (item 5),
+   which is why the switch row has a floor width. `top: 0` with the pane's padding
+   cancelled below, so it lands flush under the section tabs instead of floating a
+   padding's width beneath them (2026-09-07). */
+.checklist-head {
+  /* A sticky offset is measured from the scrollport's PADDING box, and the drawer
+     pane pads 16px — so `top: 0` parked the header 16px below the section tabs with
+     content sliding through the gap. -16px puts it flush against them. */
+  position: sticky; top: -16px; z-index: 2;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  flex-wrap: wrap; padding: 9px 12px 9px 14px;
+  background: var(--hue-teal-tint); border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Links INTO the evidence (2026-09-07, item 3): the coverage line, the strength and
+   watch-out chips, and a gate's evidence tag all lead to the row they name. */
+.sub-link {
+  background: none; border: 0; padding: 0; font: inherit; font-size: 12.5px;
+  color: var(--ink-soft); cursor: pointer; text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+.sub-link:hover { color: var(--brand-green-deep); }
+.ev-line { transition: box-shadow .12s var(--ease); }
+.ev-line:hover { box-shadow: 0 0 0 1.5px var(--border-strong); }
+.gate-tag.is-link { cursor: pointer; font: inherit; font-size: 10.5px; font-weight: 700; }
+.gate-tag.is-link:hover { border-color: var(--warn-ink); color: var(--warn-ink); }
+.gate-tag-partial.is-link:hover { border-color: var(--hue-amber-ink); }
+
+/* A 333-candidate Review renders ~12,000 DOM nodes in one pass — a 433 ms block on
+   a fast laptop, and linear in candidates (2026-09-10). `content-visibility` lets
+   the browser skip style, layout and paint for the rows that are off screen, while
+   they STAY in the DOM: keyboard navigation, the ?focus= deep link, scrollIntoView
+   and the browser's own find-in-page all keep working, which is what virtualising
+   the list would have put at risk. `contain-intrinsic-size` is the height to assume
+   for a row it has NOT laid out yet, and it has to be right or the scrollbar lies and
+   a scroll position lands on the wrong candidate. It sizes the CONTENT box, so it is
+   NOT the 133px a row measures — the 12px padding either side and the border are
+   added on top. Tuned against the pilot's 333-candidate list until the scroll height
+   matched the real one: 100px is within 1.1%, where 116px was 10% long and 133px was
+   23%. The `auto` keyword means a row's true size is remembered once it has been
+   seen, so this estimate only governs what nobody has scrolled past yet. A browser
+   without support renders exactly as before. */
+.rev-card {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 100px;
+}
+
+/* The row a link just took you to: a ring that fades, so the eye lands on it. */
+@keyframes brss-aim { from { box-shadow: inset 0 0 0 2px var(--brand-green); } to { box-shadow: inset 0 0 0 2px transparent; } }
+.req-aim { animation: brss-aim 1.8s var(--ease) 1; background: var(--brand-green-tint); }
+.aim-flash { animation: brss-aim 1.6s var(--ease) 1; }
+@media (prefers-reduced-motion: reduce) {
+  .req-aim, .aim-flash { animation: none; }
+  .req-aim { box-shadow: inset 0 0 0 2px var(--brand-green); }
+}
+
+/* The way back to where the drawer was opened from (the Shortlist's second pass). */
+.drawer-back {
+  display: inline-flex; align-items: center; gap: 4px; margin-bottom: 6px;
+  background: none; border: 0; padding: 0; font: inherit; font-size: 12px;
+  font-weight: 700; color: var(--brand-green-deep); cursor: pointer;
+}
+.drawer-back:hover { text-decoration: underline; }
+
+/* Shortlist rows (2026-09-07, item 16): the second pass re-reads the evidence, so
+   the whole row opens that candidate's drawer. */
+.sl-row {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  padding: 10px 18px; border: 0; border-top: 1px solid var(--neutral-150);
+  background: var(--white); font: inherit; cursor: pointer; text-align: left;
+  transition: background .12s var(--ease);
+}
+.sl-row:hover { background: var(--neutral-100); }
+.sl-row:hover .sl-chev { color: var(--ink); transform: translateX(2px); }
+.sl-chev { flex: 0 0 auto; color: var(--ink-muted); font-size: 17px; line-height: 1; transition: transform .12s var(--ease), color .12s var(--ease); }
+.sl-dl {
+  margin-left: auto; display: inline-flex; align-items: center; gap: 5px;
+  height: 26px; padding: 0 10px; border-radius: 999px; white-space: nowrap;
+  border: 1px solid var(--border-subtle); background: var(--white);
+  font: inherit; font-size: 11.5px; font-weight: 700; color: var(--ink-soft); cursor: pointer;
+}
+.sl-dl:hover:not(:disabled) { border-color: var(--brand-green); color: var(--brand-green-deep); }
+.sl-dl:disabled { opacity: .5; cursor: default; }
+
+/* The way back to wherever the reviewer came from (the Shortlist's second pass). */
+.back-float {
+  position: absolute; left: 24px; bottom: 64px; z-index: 6;
+  display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 15px;
+  border-radius: 999px; border: 1px solid var(--border-subtle); background: var(--white);
+  color: var(--ink); font: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer;
+  box-shadow: var(--shadow-md);
+}
+.back-float:hover { border-color: var(--brand-green); color: var(--brand-green-deep); }
+
+/* The rank badge carries the score under the rank, always (2026-09-07, item 5). It
+   started as a drawer-only affordance — the drawer covers the score column on the
+   right — and earned its place in the resting list too. The "#" is what stops the
+   two numbers reading as two scores. */
+.rank-badge {
+  flex: 0 0 auto; width: 34px; min-height: 28px; border-radius: 8px;
+  background: var(--white); border: 1px solid var(--border-subtle);
+  display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: 12.5px; font-weight: 700; color: var(--ink-soft); line-height: 1;
+}
+.rank-badge.has-score { padding: 4px 0; gap: 3px; }
+.rank-badge .rank-hash { color: var(--ink-muted); font-weight: 700; margin-right: 1px; }
+.rank-badge .rank-n { font-variant-numeric: tabular-nums; }
+.rank-badge .rank-score {
+  font-size: 11px; font-weight: 800; color: var(--brand-green-deep);
+  font-variant-numeric: tabular-nums; border-top: 1px solid var(--neutral-150);
+  padding-top: 3px; width: 100%; text-align: center;
+}
+
+/* The experience journey (2026-09-11, pilot ask 3): the dated positions a
+   length-of-experience requirement was worked out from, drawn as a timeline instead
+   of a stack of quotes. Each bar is sized against the longest span, so a five-year
+   stint and a six-month one differ before either number is read. Every value is
+   computed server-side (review._span_view) — this only draws it. */
+.exp-journey { margin-top: 8px; border: 1px solid var(--hue-blue-solid); background: var(--hue-blue-tint); border-radius: 10px; padding: 8px 10px; }
+/* The headline folds the journey away (2026-09-11) — a button, so it carries its own
+   affordance and keyboard access. `align-items: center` because it now leads with a
+   chevron rather than a baseline-aligned word. */
+.exp-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; width: 100%;
+  border: 0; background: none; padding: 0; margin: 0; font-family: inherit; cursor: pointer;
+  color: var(--hue-blue-ink); text-align: left; }
+.exp-title { font-size: 11.5px; font-weight: 700; color: var(--hue-blue-ink); }
+.exp-total { font-size: 12.5px; font-weight: 800; color: var(--hue-blue-ink); background: var(--white); border-radius: 999px; padding: 1px 9px; font-variant-numeric: tabular-nums; }
+.exp-sub { font-size: 11px; color: var(--ink-muted); margin-left: auto; }
+.exp-rows { list-style: none; margin: 7px 0 0; padding: 0 0 0 14px; position: relative; }
+/* the rail the dots sit on — the journey, not just a list */
+.exp-rows::before { content: ""; position: absolute; left: 4px; top: 10px; bottom: 10px; width: 2px; background: var(--hue-blue-solid); opacity: .4; }
+/* The two outer columns are FIXED so the rows line up as a table: an `auto` column
+   is measured per row, and two grids side by side is a ragged timeline (measured:
+   bar boxes 547 vs 555 across two rows). Widths from the text — the longest real
+   period reads 113px and the longest length "11 yr 11 mo" 64px. */
+.exp-rows > li { position: relative; display: grid; grid-template-columns: 120px minmax(40px, 1fr) 68px; align-items: center; column-gap: 9px; row-gap: 2px; padding: 3px 0; }
+.exp-rows > li::before { content: ""; position: absolute; left: -11px; top: 9px; width: 8px; height: 8px; border-radius: 50%; background: var(--hue-blue-solid); }
+/* Explicit placement, so a row reads title-first and the bar sits UNDER the title in
+   the same column (2026-09-11). Auto-flow would put the bar beside it and squeeze both.
+   A row with no title (a run screened before p36) keeps the bar on the first line. */
+.exp-when { grid-column: 1; grid-row: 1; font-size: 11.5px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+.exp-role { grid-column: 2; grid-row: 1; font-size: 12px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.exp-len { grid-column: 3; grid-row: 1; font-size: 11.5px; font-weight: 700; color: var(--hue-blue-ink); font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; }
+.exp-bar { grid-column: 2; grid-row: 2; height: 6px; border-radius: 3px; background: var(--white); overflow: hidden; }
+.exp-rows > li.no-role .exp-bar { grid-row: 1; }
+.exp-bar > span { display: block; height: 100%; background: var(--hue-blue-solid); border-radius: 3px; }
+.exp-quote { grid-column: 1 / -1; font-size: 11px; color: var(--ink-muted); font-style: italic; line-height: 1.4; }
+.exp-note { font-size: 11px; color: var(--ink-muted); margin-top: 5px; }
+/* A job the requirement did not count (p38, 2026-09-25): it keeps its place on the
+   timeline so the gap in the count is visible WHERE it is, in slate — the palette's
+   "neutral / not counted" hue — with a hollow dot, and the AI's reason on its own line.
+   The all-jobs total sits under the headline, indented past the chevron. */
+.exp-all { font-size: 11px; font-weight: 600; color: var(--hue-blue-ink); margin: 3px 0 0 20px; }
+.exp-rows > li.not-counted::before { background: var(--white); border: 2px solid var(--hue-slate-solid); width: 4px; height: 4px; }
+.exp-rows > li.not-counted .exp-when,
+.exp-rows > li.not-counted .exp-role,
+.exp-rows > li.not-counted .exp-len { color: var(--ink-muted); }
+.exp-rows > li.not-counted .exp-bar > span { background: var(--hue-slate-solid); opacity: .5; }
+.exp-why { grid-column: 1 / -1; font-size: 11px; font-weight: 600; color: var(--hue-slate-ink); line-height: 1.4; }
+
+/* The score, in the two parts a recruiter can act on (2026-09-11, pilot ask 5):
+   what their own checklist gave, what the AI moved, and the sum. Both numbers are
+   buttons — they lead to the thing that produced them. */
+.score-line { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; font-size: 13.5px; }
+.score-part { display: inline-flex; align-items: baseline; gap: 4px; border: 1px solid var(--border-subtle); background: var(--white); border-radius: 9px; padding: 4px 10px; font-family: inherit; font-size: 13px; color: var(--ink-soft); cursor: pointer; }
+.score-part:hover { border-color: var(--brand-green); color: var(--ink); }
+.score-part strong { font-size: 15px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.score-op { font-size: 13px; color: var(--ink-muted); font-weight: 700; }
+.score-final { font-size: 17px; font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; }
+.score-final > span { font-size: 11.5px; font-weight: 700; color: var(--ink-muted); }
+.score-cap, .score-aside { font-size: 11px; font-weight: 700; color: var(--ink-muted); background: var(--neutral-100); border: 1px solid var(--border-subtle); border-radius: 7px; padding: 2px 7px; font-family: inherit; }
+.score-aside { cursor: pointer; color: var(--warn-ink); background: var(--surface-warn); border-color: var(--warn-border); }
+.score-line-note { margin: 7px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--ink-soft); }
+
+/* The résumé fills the drawer edge to edge (item 9). The bar's STICKY positioning
+   (2026-09-11) lives on the element in ReviewDrawer.tsx, beside the pane that scrolls
+   — the two are one guarantee, and there it is testable. */
+.resume-bar { display: flex; align-items: center; gap: 12px; padding: 8px 14px; border-bottom: 1px solid var(--border-subtle); font-size: 12px; color: var(--ink-soft); background: var(--neutral-100); }
+.resume-frame { flex: 1 1 auto; width: 100%; min-height: 420px; border: 0; display: block; background: var(--neutral-150); }
+
+/* A fieldset used only to disable a region's controls (ChecklistTab, 2026-10-16):
+   no box of its own, so the layout is the same whether it is disabled or not. */
+.fieldset-plain { display: contents; border: 0; margin: 0; padding: 0; min-width: 0; }

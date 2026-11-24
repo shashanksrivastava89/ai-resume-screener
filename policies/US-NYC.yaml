@@ -1,0 +1,18 @@
+# New York City — Local Law 144 (automated employment decision tools).
+
+jurisdiction: US-NYC
+
+obligations:
+  - "LL144: an independent bias audit of this tool from within the past year must exist before use for NYC roles."
+  - "LL144: notify NYC candidates at least 10 business days before use, naming the job qualifications and characteristics assessed."
+  - "LL144: publish the bias-audit summary and the data-retention policy on the careers site."
+
+# The data-retention policy LL144 asks you to publish (notes; nothing auto-deletes).
+keep_at_least_days: 1095
+purge_by_days: 365
+monitoring_categories:
+  - race/ethnicity (LL144 audit categories)
+  - gender (LL144 audit categories)
+notes: >-
+  LL144 attaches to NYC jobs and NYC residents — the residence half needs the
+  production policy-union feature (§12).

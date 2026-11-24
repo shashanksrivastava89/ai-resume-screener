@@ -1,0 +1,33 @@
+ats:
+  provider: local
+  jd_dir: jds
+  roles_dir: data/roles        # per-role candidate batches (data/roles/<slug>/resumes/)
+  resumes_dir: data/resumes    # legacy shared folder — fallback + UI migration only
+
+policy:
+  default_jurisdiction: IN
+  policies_dir: policies
+
+# The scoring knobs (bands, caps, credit) live in signals/scoring_model.vN.yaml —
+# versioned, edited on the Scoring page, and approved by a second leader (P51).
+
+redaction:
+  enabled: true
+
+models:
+  document_model: "prebuilt-layout"
+
+# Where résumé text comes from (2026-10-14). hybrid = PDFs and Word files that carry
+# their own text are read on this machine and redacted before any Azure AI service
+# sees them; only scans and photos go to Document Intelligence. di-only = every file
+# to Document Intelligence (the behaviour before 2026-10-14). EXTRACTION_MODE in the
+# environment overrides this.
+extraction:
+  mode: hybrid
+  local_min_chars_per_page: 200   # letters + digits for a PDF page to count as text
+
+runtime:
+  concurrency: 4
+  cache_dir: ".cache"
+
+signals_file: signals/registry.yaml

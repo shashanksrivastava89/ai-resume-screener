@@ -1,0 +1,52 @@
+# The test gate for pull requests (2026-10-14).
+#
+# deploy-dev.yml runs the same suite, but only on a push to main. Branch protection
+# on main requires a check named `test` before a pull request can merge, and a check
+# that never reports on pull requests would block every merge — so this workflow
+# runs the identical job for them. Keep the two `test` jobs in step.
+#
+# Least privilege: read-only contents, no secrets, no cloud login. Actions are
+# pinned to full commit SHAs (a moving tag is a supply-chain door); Dependabot
+# proposes the bumps.
+name: CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      # The frontend is built FIRST: the API registers its SPA catch-all route only
+      # when web/dist exists, and the shipped container always has it.
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+        working-directory: web
+      - run: npm run build
+        working-directory: web
+
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          enable-cache: true
+      - run: uv sync --frozen
+      - name: pytest
+        run: uv run pytest -q
+      - run: npm run test -- --run
+        working-directory: web

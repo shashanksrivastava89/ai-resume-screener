@@ -1,0 +1,15 @@
+# Singapore — PDPA notification + Tripartite/TAFEP fair-employment guidance.
+
+jurisdiction: SG
+
+obligations:
+  - "PDPA: notify candidates that an assistive screening tool processes their application data, and for what purpose."
+  - "Tripartite Guidelines (TAFEP): keep every selection criterion job-related and be ready to show the criteria used for a role."
+
+# PDPA retention-limitation (notes; nothing auto-deletes): keep 3 years, purge PII after a year.
+keep_at_least_days: 1095
+purge_by_days: 365
+monitoring_categories: []
+notes: >-
+  Tripartite guidance discourages collecting demographic data unrelated to the job,
+  so monitoring stays empty for this market in the pilot.

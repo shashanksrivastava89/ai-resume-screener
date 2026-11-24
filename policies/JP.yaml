@@ -1,0 +1,15 @@
+# Japan — APPI purpose notice; long-tenure market norms.
+
+jurisdiction: JP
+
+signal_overrides:
+  tenure_pattern_vs_stability:
+    params: { short_stint_months: 18, lookback_years: 12 }  # long-tenure norms: short stints read differently
+
+obligations:
+  - "APPI: state the purpose of use of candidates' personal information and honor disclosure/correction requests."
+
+# APPI purpose-limitation (notes; nothing auto-deletes): keep 3 years, purge PII after a year.
+keep_at_least_days: 1095
+purge_by_days: 365
+monitoring_categories: []

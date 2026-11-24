@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Resume Screener">
+  <!-- Resume Screener app mark. A checklist with its last row ticked — the app's
+       actual subject (requirements, checked against a candidate), and the one
+       shape that still reads at 16px in a browser tab. Brand green #00A651 is
+       the anchor colour from the Acme design system (tokens/colors.css). -->
+  <rect width="64" height="64" rx="14" fill="#00A651"/>
+  <g fill="#fff">
+    <!-- two unmarked rows: a bullet and its line -->
+    <rect x="14" y="18" width="7" height="7" rx="2"/>
+    <rect x="26" y="20" width="24" height="4" rx="2"/>
+    <rect x="14" y="30" width="7" height="7" rx="2"/>
+    <rect x="26" y="32" width="24" height="4" rx="2"/>
+    <!-- the ticked row -->
+    <rect x="26" y="44" width="24" height="4" rx="2"/>
+  </g>
+  <path d="M13.2 45.6l3.4 3.6 6.2-7.4" fill="none" stroke="#fff"
+        stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

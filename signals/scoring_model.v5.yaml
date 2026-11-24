@@ -1,0 +1,508 @@
+schema: 1
+version: 5
+bands:
+  strong_at: 85.0
+  possible_at: 60.0
+  cap_if_must_have_missing: Possible
+clamp:
+  min: 0.0
+  max: 100.0
+coverage:
+  match_value:
+    full: 1.0
+    partial: 0.5
+    none: 0.0
+adjustments:
+  total_cap_points: 8.0
+preferences:
+  per_preference_cap_points: 2.0
+  review_months: 6
+confidence:
+  unmeasured_extraction_value: 0.85
+  high_requires_at_least: 0.9
+  low_below: 0.75
+  low_when_downgraded_findings_over: 2
+batch_quality:
+  top_n: 7
+  strong_at: 85.0
+  okay_at: 55.0
+signals:
+- id: quota_attainment_evidence
+  description: (Sales) Concrete, verifiable attainment stated in the resume — e.g. "112% of ₹6 Cr FY24
+    target", President's Club, ranked finishes. Vague "exceeded targets" claims earn little or nothing.
+  display_name: Quota attainment (sales)
+  definition: null
+  kind: judged
+  direction: plus
+  cap_points: 5.0
+  enabled_default: true
+  retired: false
+  job_relatedness: Documented quota attainment is the most direct evidence of sales capability; evidence-only
+    and capped to resist resume inflation.
+  notes: null
+- id: regulated_environment_exposure
+  description: Evidence of having worked under the compliance regimes this role touches — for India Finance
+    e.g. GST/TDS filings, Ind AS, Companies Act, SOX controls, RBI/SEBI-regulated processes, statutory
+    audits.
+  display_name: Regulated environment
+  definition: null
+  kind: judged
+  direction: plus
+  cap_points: 4.0
+  enabled_default: true
+  retired: false
+  job_relatedness: Roles operating under these regimes need people who have actually run the filings and
+    controls; errors there are costly and audited.
+  notes: null
+- id: deal_profile_fit
+  description: (Sales) Match between the deals the candidate has actually run — ticket size, cycle length,
+    motion (field/inside, channel/direct, SMB/enterprise) — and this role's deal profile. Can add or subtract
+    within its cap.
+  display_name: Deal profile fit (sales)
+  definition: null
+  kind: judged
+  direction: both
+  cap_points: 4.0
+  enabled_default: true
+  retired: false
+  job_relatedness: Selling motion transfers poorly across very different deal profiles; closeness predicts
+    ramp speed in the territory.
+  notes: null
+- id: tenure_pattern_vs_stability
+  description: How long the candidate tends to stay in permanent jobs. Rewards a track record of completed
+    stints; can subtract for many very short permanent stints in a row. Contract, consulting and internship
+    roles never count against anyone. What counts as "short" comes from the jurisdiction policy — Indian
+    sales norms differ from Japanese ones.
+  display_name: Tenure pattern
+  definition: null
+  kind: computed
+  direction: both
+  cap_points: 4.0
+  enabled_default: true
+  retired: false
+  job_relatedness: Ramp-up in finance and sales roles takes months; sustained stints predict staying through
+    the role's payback period and continuity for clients and ledgers.
+  notes: null
+- id: skill_recency
+  description: How recently the JD's core skills were actually used, judged from dated work history rather
+    than the skills list alone. "Filed GST monthly through 2025" beats a skill last touched in 2016.
+  display_name: Skill recency
+  definition: null
+  kind: computed
+  direction: both
+  cap_points: 3.0
+  enabled_default: true
+  retired: false
+  job_relatedness: Recently exercised skills transfer immediately; long-dormant ones need retraining time
+    the hiring team should know about.
+  notes: null
+- id: scope_trajectory
+  description: Growth in evidenced responsibility over time — team size, number of entities or ledgers
+    owned, territory, book of business. Only counts what the resume states; a flat trajectory never subtracts
+    points.
+  display_name: Scope growth
+  definition: null
+  kind: computed
+  direction: plus
+  cap_points: 3.0
+  enabled_default: true
+  retired: false
+  job_relatedness: Expanding scope is direct evidence of capacity to carry this role's responsibility
+    level.
+  notes: null
+- id: certification_currency
+  description: Role-relevant credentials and how current they are — for India Finance e.g. CA / CS / ICWA
+    (CMA), CPA / CFA / ACCA; for markets and insurance e.g. NISM / AMFI / IRDAI registrations. Stale or
+    lapsed credentials simply add less; they never subtract.
+  display_name: Certification currency
+  definition: null
+  kind: computed
+  direction: plus
+  cap_points: 3.0
+  enabled_default: true
+  retired: false
+  job_relatedness: Current certifications evidence up-to-date knowledge that some finance tasks legally
+    or practically require.
+  notes: null
+- id: hands_on_currency
+  description: Whether the candidate still personally does the hands-on work this role needs (e.g. preparing
+    reconciliations or GST returns themselves, carrying their own quota) versus only supervising it. Matters
+    only when the JD is hands-on.
+  display_name: Hands-on currency
+  definition: null
+  kind: judged
+  direction: both
+  cap_points: 3.0
+  enabled_default: true
+  retired: false
+  job_relatedness: A hands-on role needs current doing-experience; a recent pure-oversight profile ramps
+    slower on the tools and details.
+  notes: null
+- id: domain_transfer_distance
+  description: How close the candidate's industry and domain sit to this role's domain, measured by comparing
+    their work history with the JD. Declared as its own signal so the similarity math is visible and capped
+    instead of hidden inside a blended score.
+  display_name: Domain closeness
+  definition: null
+  kind: computed
+  direction: both
+  cap_points: 2.0
+  enabled_default: true
+  retired: false
+  job_relatedness: Domain closeness predicts familiarity with the vocabulary, processes and regulations
+    the role works in.
+  notes: null
+- id: language_evidence
+  description: EVIDENCED working use of languages the role's territory needs — including Indian regional
+    languages for field sales (e.g. "ran dealer meets in Tamil and Kannada"). Counts only stated, work-related
+    use. NEVER inferred from name, birthplace, school or address.
+  display_name: Language evidence
+  definition: null
+  kind: judged
+  direction: plus
+  cap_points: 2.0
+  enabled_default: true
+  retired: false
+  job_relatedness: Field sales and customer-facing finance in multilingual territories depend on working
+    language ability with customers and channel partners.
+  notes: null
+- id: preferred_domain_background
+  description: Worked at an organization on the HR-approved list of similar or adjacent businesses for
+    this role family. The list is EMPTY until HR fills it in — and with an empty list this signal never
+    adds points.
+  display_name: Preferred domain background
+  definition: null
+  kind: judged
+  direction: plus
+  cap_points: 3.0
+  enabled_default: true
+  retired: false
+  job_relatedness: Direct exposure to comparable products, customers or processes shortens onboarding.
+    Only organizations HR explicitly lists may count — nothing inferred.
+  notes: 'HR owns the organization list (policies/*: params.organizations). Empty by design until HR provides
+    it.'
+- id: public_work_relevance
+  description: Role-relevant public work the candidate cites in their own resume (talks, articles, open-source).
+    OFF for the pilot. Absence of any public profile never counts against anyone.
+  display_name: Public work
+  definition: null
+  kind: judged
+  direction: plus
+  cap_points: 2.0
+  enabled_default: false
+  retired: false
+  job_relatedness: Only candidate-provided material may ever be considered (no scraping); mostly relevant
+    to technical roles, not this pilot's finance and sales roles.
+  notes: Stays off until the production enrichment design (§12) is approved. Never a negative signal.
+topics:
+- id: employment_gaps
+  name: Employment gaps
+  reason: Gaps are life — caregiving, illness, layoffs, study, visas. Gaps are computed nowhere in this
+    system and never scored.
+  floor: true
+  added_by: null
+  added_at: null
+  stages:
+  - scoring
+  - checklist
+  - preferences
+  phrases:
+  - employment gap
+  - employment gaps
+  - career gap
+  - career gaps
+  - work gap
+  - work gaps
+  - gap in employment
+  - gaps in employment
+  - gap in work history
+  - gaps in work history
+  - gap in career
+  - unexplained gap
+  - unexplained gaps
+  - career break
+  - career breaks
+  - break in career
+  - sabbatical
+  - sabbaticals
+  - extended absence
+  - extended absences
+  - extended leave
+  - time off work
+- id: unemployment_status
+  name: Current unemployment
+  reason: Being currently out of work says nothing about ability, and penalizing it compounds disadvantage.
+  floor: true
+  added_by: null
+  added_at: null
+  stages:
+  - scoring
+  - checklist
+  - preferences
+  phrases:
+  - unemployed
+  - unemployment
+  - currently not working
+  - out of work
+  - between jobs
+- id: overqualification_or_age_proxies
+  name: Age & its proxies
+  reason: '"Too senior", graduation years, date of birth — these are age-discrimination proxies. Age data
+    is redacted before scoring anyway.'
+  floor: true
+  added_by: null
+  added_at: null
+  stages:
+  - scoring
+  - checklist
+  - preferences
+  phrases:
+  - overqualified
+  - too senior
+  - too experienced
+  - year old
+  - years old
+  - age
+  - graduation year
+  - date of birth
+  - dob
+- id: commute_or_address
+  name: Address & commute
+  reason: Address and commute distance proxy for community and socioeconomic status. Addresses are redacted
+    before scoring.
+  floor: true
+  added_by: null
+  added_at: null
+  stages:
+  - scoring
+  - checklist
+  - preferences
+  phrases:
+  - commute
+  - commutes
+  - commuting
+  - home address
+  - residential address
+  - lives in
+  - lives near
+  - lives far
+  - live near
+  - live far
+  - current location
+  - currently located
+  - currently based
+  - based in
+  - based out of
+  - km from
+  - kms from
+  - km of
+  - kms of
+  - kilometres from
+  - kilometers from
+  - kilometres of
+  - kilometers of
+  - miles from
+  - miles of
+  - km radius
+  - within a radius
+  - relocate
+  - relocation
+  - willing to relocate
+  - local candidate
+  - local candidates
+  - locals only
+  - hometown
+  - native place
+  - domicile
+  - pin code
+  - pincode
+  - postal code
+  - zip code
+- id: salary_history
+  name: Salary history
+  reason: Prior pay imports historic inequity and is illegal to ask about in several jurisdictions.
+  floor: true
+  added_by: null
+  added_at: null
+  stages:
+  - scoring
+  - checklist
+  - preferences
+  phrases:
+  - salary history
+  - salary expectation
+  - salary expectations
+  - salary band
+  - salary drawn
+  - current salary
+  - past compensation
+  - current ctc
+  - ctc
+- id: school_prestige_as_such
+  name: School prestige as such
+  reason: Institution brand by itself encodes access and class/caste, not ability. What was studied and
+    achieved is still assessed — the brand alone is not.
+  floor: true
+  added_by: null
+  added_at: null
+  stages:
+  - scoring
+  - checklist
+  - preferences
+  phrases:
+  - prestigious
+  - tier-1 college
+  - tier 1 college
+  - tier-one college
+  - tier-1 institute
+  - tier 1 institute
+  - tier-1 university
+  - tier 1 university
+  - premier institute
+  - iit
+  - iim
+- id: culture_fit_vibes
+  name: Culture fit / vibes
+  reason: Unstructured "fit" judgments are where bias hides. Only declared, evidenced, capped signals
+    may adjust scores.
+  floor: true
+  added_by: null
+  added_at: null
+  stages:
+  - scoring
+  - checklist
+  - preferences
+  - narrative
+  phrases:
+  - culture fit
+  - cultural fit
+  - culturally aligned
+  - culturally fits
+  - fit with the team
+  - fit into the team
+  - fit with the culture
+  - fit into the culture
+  - vibe
+  - vibes
+- id: similarity_to_current_employees
+  name: Similarity to current team
+  reason: Ranking by resemblance to the current team automates homogeneity (the Amazon lesson). Similarity
+    to existing employees is never a target.
+  floor: true
+  added_by: null
+  added_at: null
+  stages:
+  - scoring
+  - checklist
+  - preferences
+  - narrative
+  phrases:
+  - similar to our
+  - similar to current
+  - similar to existing
+  - like our team
+  - like our current team
+  - like our employees
+- id: demographic_language
+  name: Demographic language
+  reason: Identity is removed before scoring — any demographic word in scoring reasoning means a leak
+    or an inference. Set aside either way.
+  floor: true
+  added_by: null
+  added_at: null
+  stages:
+  - scoring
+  - narrative
+  - checklist
+  - preferences
+  phrases:
+  - male
+  - female
+  - gender
+  - married
+  - marital
+  - pregnant
+  - pregnancy
+  - caste
+  - religion
+  - nationality
+  - males
+  - females
+  - unmarried
+  - women only
+  - men only
+  - only women
+  - only men
+  - women candidates
+  - men candidates
+  - ladies only
+  - lady candidates
+  - religious
+  - religious observance
+  - religious holidays
+  - ethnic
+  - ethnicity
+  - ethnic background
+  - ethnic origin
+  - nationals only
+  - citizens only
+  - jati
+  - jaati
+- id: family_and_caregiving
+  name: Family & caring responsibilities
+  reason: Children, pregnancy, marriage and caring for family say nothing about how someone does the
+    job, and screening on them falls hardest on women. Never scored, and never a reason to prefer or
+    exclude anyone.
+  floor: true
+  added_by: null
+  added_at: null
+  stages:
+  - scoring
+  - checklist
+  - preferences
+  - narrative
+  phrases:
+  - caregiver
+  - caregivers
+  - caregiving
+  - care giver
+  - primary caregiver
+  - childcare
+  - child care
+  - maternity
+  - paternity
+  - parental leave
+  - family commitments
+  - family obligations
+  - family responsibilities
+  - family status
+  - family plans
+  - family planning
+  - start a family
+  - starting a family
+  - planning a family
+  - children
+  - kids
+  - divorced
+  - widowed
+  - single parent
+  - single parents
+  - single mother
+  - single mothers
+  - single father
+  - single fathers
+  - compromisos familiares
+  - cargas familiares
+  - responsabilidades familiares
+  - sin compromisos
+  - shaadi shuda
+  - bachche
+  - garbhvati
+display:
+  adjustment_cap_note: Each factor is capped so no single one can swing a decision.
+  total_cap_note: All context notes together can move a score by at most {total_cap_points} points.
+  preference_cap_note: Each preference can move a score by at most {per_preference_cap_points} points
+    and never hides anyone.
+  review_note: Approvals expire after {review_months} months and need a re-review.
+  band_cap_note: A candidate missing a must-have can rank no higher than "{cap_if_must_have_missing} match",
+    whatever the number says.

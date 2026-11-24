@@ -1,0 +1,80 @@
+# Feature flags (P37) — file-first, the seed + source of truth for flag definitions.
+#
+# Read shape matches the DB catalog (service.features_catalog) so the P49 DB flip is
+# invisible: features.catalog() merges this file (seeds every key) with DB rows (DB
+# wins per key it knows). Edits go through features.set_flag / PUT /api/flags/{key}
+# (ruamel round-trip, version bump, audit entry, flag_changed event).
+#
+# Two control classes:
+#   - normal flags: UI-editable. Value = the region override if present, else `default`.
+#     Per-region overrides live under each flag's `regions:` map ({IN: true}); absent = default.
+#   - scope: requisition | app (2026-09-12). A per-region override is only ever
+#     consulted where a call site has a REQUISITION to take a region from; an
+#     app-scoped flag is read globally, so offering "By region" for one promised
+#     something the code cannot keep. Missing = app, the safe direction.
+#   - control: env flags: the value comes ONLY from the named env var (1/true/on/yes = on).
+#     set_flag / PUT reject them; the Feature-flags page renders them read-only.
+#     2026-09-07: hm_portal is no longer one of them. It was env-controlled
+#     (FEATURE_HM_PORTAL) on the theory that only a deployment owner should light up
+#     the hiring-manager portal, but turning it on then meant an app-settings change
+#     and a restart — so a SuperAdmin now toggles it here, like every other flag.
+#     FEATURE_HM_PORTAL is inert; remove it from the deployment when convenient.
+version: 1001
+features:
+  icims_reopen:
+    scope: requisition
+    name: "Reopen requisition"
+    description: "Let recruiters move a closed requisition back to active. iCIMS write-back arrives with the adapter; today it flips the local status only."
+    default: true
+    regions: {}
+  icims_clone:
+    scope: requisition
+    name: "Clone requisition"
+    description: "Start a new requisition prefilled from a closed one (title, JD, location, checklist). The new iCIMS Req ID is always entered fresh."
+    default: true
+    regions: {}
+  icims_close_sync:
+    scope: app
+    name: "iCIMS close-status sync"
+    description: "Reflect a requisition's close/outcome back to iCIMS. Display-only stub until the adapter ships (§12)."
+    default: false
+  hm_portal:
+    scope: app
+    name: "Hiring-manager portal"
+    description: "Turn on the hiring-manager experience (suggest-mode checklist input and takes). When off, the hm_take capability is stripped everywhere."
+    default: true
+    control: file
+  ask_claude_mcp:
+    scope: app
+    name: "Ask Claude — live MCP"
+    description: "The local MCP connector (screener mcp) that lets Claude Desktop / Claude Code read the review surfaces. Off by default until InfoSec has reviewed AI coding-assistant access to candidate data (POL-00000 §4.6.5, 2026-10-14)."
+    default: false
+  ask_claude_handoff:
+    scope: app
+    name: "Ask Claude — copy to clipboard"
+    description: "The Ask Claude button on the Review tab: copies a summary of the requisition's candidates (names unless blind review is on, match bands, requirement verdicts and short quotes from the identity-removed résumés) for the user to paste into Claude. Off by default until InfoSec confirms candidate data may be pasted into Claude (POL-00000 §4.5.6–4.5.8, 2026-10-23). While off, the button is hidden and the server refuses the copy."
+    default: false
+  careers_autofill:
+    scope: app
+    name: "Careers-portal auto-fill (temporary iCIMS bridge)"
+    description: "Fetch a requisition's title, location and JD from the public Acme careers site by iCIMS Req ID to pre-fill the New-requisition form. Temporary until the native iCIMS integration ships; controlled by deployment."
+    default: false
+    control: env
+    env: FEATURE_CAREERS_AUTOFILL
+  multi_resume_split:
+    scope: requisition
+    name: "Split multi-résumé files (temporary iCIMS bridge)"
+    description: "Detect an iCIMS Bulk Print PDF (many candidates in one file) and split it into individual résumés at upload/import time. On by default; turn off to keep every uploaded file as a single candidate. Temporary until the native iCIMS integration ships."
+    default: true
+    regions: {}
+  manual_locks:
+    scope: app
+    name: "Manual checklist / candidate locks"
+    description: "Show the Lock buttons on the Checklist and Candidates tabs. Hidden by default (pilot feedback 2026-09-06: the lock was hard to understand); an existing lock is still shown and still enforced while this is off."
+    default: false
+  mention_email_attach_resume:
+    scope: requisition
+    name: "Attach the résumé to @-mention emails"
+    description: "When someone who does not use the app is @-mentioned on a candidate, the email they receive carries the résumé as an attachment. Off by default — a résumé is candidate PII and sending it outside the app's access model is an HR + Legal decision."
+    default: false
+    regions: {}
