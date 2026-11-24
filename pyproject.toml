@@ -9,7 +9,7 @@ dependencies = [
     "cryptography>=50",  # decision verdicts encrypted at rest (fieldcrypto); >=50: PYSEC-2026-3552
     "azure-ai-documentintelligence>=1.0.0",
     "python-docx>=1.1",
-    "pypdf>=6.19",  # parses hostile uploads (pdfsafe): >=6.19 for the 2026 advisories
+    "pypdf>=7.1.1",  # parses hostile uploads (pdfsafe): >=6.19 for the 2026 advisories
     "openai>=1.55",
     "pydantic>=2.7",
     "pydantic-settings>=2.3",
