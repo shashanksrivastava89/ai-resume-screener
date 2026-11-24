@@ -16,7 +16,7 @@
 # (AcrPull) — there is no registry credential in the app's configuration.
 
 # --- Stage 1: build the React frontend ---------------------------------------------
-FROM node:20-alpine AS web
+FROM node:26-alpine AS web
 WORKDIR /build/web
 COPY web/package.json web/package-lock.json ./
 RUN npm ci
