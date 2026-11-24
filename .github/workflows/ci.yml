@@ -32,7 +32,7 @@ jobs:
 
       # The frontend is built FIRST: the API registers its SPA catch-all route only
       # when web/dist exists, and the shipped container always has it.
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '20'
           cache: npm
@@ -42,7 +42,7 @@ jobs:
       - run: npm run build
         working-directory: web
 
-      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+      - uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
         with:
           enable-cache: true
       - run: uv sync --frozen
